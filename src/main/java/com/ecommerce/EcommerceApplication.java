@@ -1,8 +1,17 @@
 package com.ecommerce;
 
 
+import com.ecommerce.domain.Role;
+import com.ecommerce.dto.domain.RegisterDTO;
+import com.ecommerce.dto.domain.UserDTO;
+import com.ecommerce.service.RoleService;
+import com.ecommerce.service.UserService;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import java.util.stream.IntStream;
 
 @SpringBootApplication
 public class EcommerceApplication {
