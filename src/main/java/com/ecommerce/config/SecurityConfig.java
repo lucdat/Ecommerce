@@ -60,6 +60,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         }
                 )
                 .and();
+        // Public endpoints
+        http.authorizeRequests()
+                .antMatchers("/api/v1/brands").permitAll()
+                .antMatchers("/api/v1/brand/{brandId}/products").permitAll()
+                .antMatchers("/api/v1/cart/**").permitAll()
+                .antMatchers("//api/v1/categories").permitAll()
+                .antMatchers("/api/v1/category/{cateId}/products").permitAll()
+                .antMatchers("/api/v1/products").permitAll()
+                .antMatchers("/api/v1/product/{id}").permitAll()
+                .antMatchers("/api/v1/tags").permitAll()
+                .antMatchers("/api/v1/user/changePassword").permitAll();
+
+
         // Set permissions on endpoints
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/v1/user/{id}/orders").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
@@ -94,20 +107,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-       web.ignoring().antMatchers(
-               "/api/v1/brands"
-                ,"/api/v1/brand/{brandId}/products"
-                ,"/api/v1/cart/**"
-                ,"/api/v1/categories"
-                ,"/api/v1/category/{cateId}/products"
-                ,"/downloadFile/**"
-                ,"/api/v1/products"
-                ,"/product/{id}"
-                ,"/api/v1/tags"
-                ,"/api/v1/tag/{tagId}/products"
-               ,"/api/v1/user/changePassword");
     }
 }
