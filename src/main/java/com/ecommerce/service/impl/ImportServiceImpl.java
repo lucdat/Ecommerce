@@ -144,6 +144,6 @@ public class ImportServiceImpl implements ImportService {
             product.getImportItems().add(saveImportItem);
         }
 
-        return "successfull";
+        return "success";
     }
 }

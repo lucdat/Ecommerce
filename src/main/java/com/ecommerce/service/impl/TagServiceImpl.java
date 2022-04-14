@@ -62,7 +62,7 @@ public class TagServiceImpl implements TagService {
                     () -> new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             tag.getProducts().add(product);
             product.getTags().add(tag);
-            return "successfull";
+            return "success";
         }
         return "error";
     }
@@ -76,7 +76,7 @@ public class TagServiceImpl implements TagService {
                     () -> new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             tag.getProducts().remove(product);
             product.getTags().remove(tag);
-            return "successfull";
+            return "success";
         }
         return "error";
     }

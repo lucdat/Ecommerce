@@ -70,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
                     () -> new ResourceNotFoundException(String.format("Product ID %S not found",productId)));
             category.getProducts().add(product);
             product.setCategory(category);
-            return "successfull";
+            return "success";
         }
         return "error";
     }
@@ -84,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
                     () -> new ResourceNotFoundException(String.format("Product ID %S not found",productId)));
             category.getProducts().remove(product);
             product.setCategory(null);
-            return "successfull";
+            return "success";
         }
         return "error";
     }

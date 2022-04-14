@@ -7,21 +7,22 @@ import com.ecommerce.dto.converters.ProductConverter;
 import com.ecommerce.dto.domain.BrandDTO;
 import com.ecommerce.dto.domain.PageBrandDTO;
 import com.ecommerce.dto.domain.PageProductDTO;
+import com.ecommerce.exception.ImageStorageException;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.exception.UniqueConstrainException;
 import com.ecommerce.repositories.BrandRepo;
 import com.ecommerce.repositories.ProductRepo;
 import com.ecommerce.service.BrandService;
-import com.ecommerce.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.util.Base64;
 
 @Service
 @Transactional
@@ -29,7 +30,6 @@ import javax.transaction.Transactional;
 public class BrandServiceImpl implements BrandService {
     private final BrandRepo brandRepo;
     private final ProductRepo productRepo;
-    private final FileStorageService fileStorageService;
 
     @Override
     public PageBrandDTO findAll(int page, int size) {
@@ -75,7 +75,7 @@ public class BrandServiceImpl implements BrandService {
                     new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             brand.getProducts().add(product);
             product.setBrand(brand);
-            return "successfull";
+            return "success";
         }
         return "error";
     }
@@ -89,7 +89,7 @@ public class BrandServiceImpl implements BrandService {
                     new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             brand.getProducts().remove(product);
             product.setBrand(null);
-            return "successfull";
+            return "success";
         }
         return "error";
     }
@@ -107,13 +107,19 @@ public class BrandServiceImpl implements BrandService {
     public String uploadLogo(Long brandId, MultipartFile image) {
         Brand brand = brandRepo.findById(brandId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Brand ID %s not found",brandId)));
-        String fileName = fileStorageService.storeFile(image);
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
-        brand.setLogo(fileDownloadUri);
-        brandRepo.save(brand);
-        return "successfull";
+        try {
+            if (image.getOriginalFilename().contains("..")) {
+                throw new ImageStorageException("Image contains invalid path sequence " + image.getOriginalFilename());
+            }else if(!image.getOriginalFilename().endsWith(".jpeg")
+                    && !image.getOriginalFilename().endsWith(".jpg")
+                    && !image.getOriginalFilename().endsWith(".png")){
+                throw new ImageStorageException("Image invalid suffix " + image.getOriginalFilename());
+            }
+            brand.setLogo(Base64.getEncoder().encodeToString(image.getBytes()));
+            brandRepo.save(brand);
+            return "success";
+        }catch (IOException exception){
+            throw new ImageStorageException(exception.getMessage());
+        }
     }
 }

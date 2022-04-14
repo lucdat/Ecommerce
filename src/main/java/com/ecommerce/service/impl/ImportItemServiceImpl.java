@@ -18,7 +18,7 @@ public class ImportItemServiceImpl implements ImportItemService {
     public String add(ImportItemDTO itemDTO) {
         if(itemDTO!=null){
             IMPORT_ITEM.put(itemDTO.getKey(), itemDTO);
-            return "successfull";
+            return "success";
         }
         return "error";
     }
@@ -27,7 +27,7 @@ public class ImportItemServiceImpl implements ImportItemService {
     public String delete(ImportItemDTO itemDTO) {
         if(itemDTO!=null){
             IMPORT_ITEM.remove(itemDTO.getKey());
-            return "successfull";
+            return "success";
         }
         return "error";
     }
@@ -37,7 +37,7 @@ public class ImportItemServiceImpl implements ImportItemService {
         if(itemDTO!=null){
             if(IMPORT_ITEM.containsKey(itemDTO.getKey())){
                 IMPORT_ITEM.put(itemDTO.getKey(), itemDTO);
-                return "successfull";
+                return "success";
             }else{
                 return "error";
             }
@@ -66,7 +66,7 @@ public class ImportItemServiceImpl implements ImportItemService {
     @Override
     public String clear() {
         IMPORT_ITEM.clear();
-        return "successfull";
+        return "success";
     }
 
     @Override

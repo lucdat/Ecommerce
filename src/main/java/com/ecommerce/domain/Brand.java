@@ -20,8 +20,9 @@ public class Brand {
     private long id;
     @Column(length =45,unique = true,nullable = false)
     private String name;
-    @Column(length = 100,columnDefinition = "varchar(100) default 'no-image.jpg'")
+    @Lob
     private String logo;
+
     @Temporal(TemporalType.DATE)
     private Date createAt;
 

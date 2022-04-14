@@ -15,7 +15,7 @@ public class ProductConverter {
             ProductDTO dto = new ProductDTO();
             Collection<ImageDTO> images = new ArrayList<>();
             for (Image image : product.getImages()) {
-                ImageDTO imageDTO = new ImageDTO(image.getUrl());
+                ImageDTO imageDTO = new ImageDTO(image.getImage());
                 images.add(imageDTO);
             }
             Collection<String> sizes = new ArrayList<>();

@@ -10,5 +10,5 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageDTO {
-    private String url;
+    private String image;
 }

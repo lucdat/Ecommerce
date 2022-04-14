@@ -67,7 +67,7 @@ public class DiscountServiceImpl implements DiscountService {
                     new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             discount.getProducts().add(product);
             product.getDiscounts().add(discount);
-            return "successfull";
+            return "success";
         }
         return "error";
     }
@@ -81,7 +81,7 @@ public class DiscountServiceImpl implements DiscountService {
                     new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             discount.getProducts().remove(product);
             product.getDiscounts().remove(discount);
-            return "successfull";
+            return "success";
         }
         return "error";
     }

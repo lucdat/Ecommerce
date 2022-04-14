@@ -56,14 +56,14 @@ public class CartServiceImpl implements CartService {
             }
             ORDER_ITEM.put(cartDTO.key(), orderItem);
         }
-        return "successfull";
+        return "success";
     }
 
     @Override
     public String delete(CartDTO cartDTO) {
         if(ORDER_ITEM.containsKey(cartDTO.key())){
             ORDER_ITEM.remove(cartDTO.key());
-            return "successfull";
+            return "success";
         }
         return "error";
     }
@@ -103,7 +103,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public String clear() {
         ORDER_ITEM.clear();
-        return "successfull";
+        return "success";
     }
 
     @Override

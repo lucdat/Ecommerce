@@ -6,11 +6,11 @@ import com.ecommerce.dto.domain.CommentDTO;
 import com.ecommerce.dto.domain.PageProductDTO;
 import com.ecommerce.dto.domain.ProductDTO;
 import com.ecommerce.dto.domain.ProductFormDTO;
+import com.ecommerce.exception.ImageStorageException;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.exception.UniqueConstrainException;
 import com.ecommerce.generators.CommentFK;
 import com.ecommerce.repositories.*;
-import com.ecommerce.service.FileStorageService;
 import com.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,9 +21,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 
@@ -39,7 +40,6 @@ public class ProductServiceImpl implements ProductService {
     private final TagRepo tagRepo;
     private final UserRepo userRepo;
     private final CommentRepo commentRepo;
-    private final FileStorageService fileStorageService;
 
     @Override
     public PageProductDTO findAll(int page, int size) {
@@ -111,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
                 throw new UniqueConstrainException("code:Code already exists!");
         }
         save(productFormDTO);
-        return "successful";
+        return "success";
     }
 
     @Override
@@ -146,18 +146,25 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepo.findById(productId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
         for(MultipartFile file:images){
-            Image image = new Image();
-            String fileName = fileStorageService.storeFile(file);
-            String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/downloadFile/")
-                    .path(fileName)
-                    .toUriString();
-            image.setUrl(fileDownloadUri);
-            Image saveImage = imageRepo.save(image);
-            product.getImages().add(saveImage);
-            saveImage.setProduct(product);
+            try {
+                if (file.getOriginalFilename().contains("..")) {
+                    throw new ImageStorageException("Image contains invalid path sequence " + file.getOriginalFilename());
+                }else if(!file.getOriginalFilename().endsWith(".jpeg")
+                        && !file.getOriginalFilename().endsWith(".jpg")
+                        && !file.getOriginalFilename().endsWith(".png")){
+                    throw new ImageStorageException("Image invalid suffix " + file.getOriginalFilename());
+                }
+                Image image = new Image();
+                image.setImage(Base64.getEncoder().encodeToString(file.getBytes()));
+                Image saveImage = imageRepo.save(image);
+                product.getImages().add(saveImage);
+                saveImage.setProduct(product);
+            }catch (IOException exception){
+                throw new ImageStorageException(exception.getMessage());
+            }
+
         }
-        return "successfull";
+        return "success";
     }
 
     @Override

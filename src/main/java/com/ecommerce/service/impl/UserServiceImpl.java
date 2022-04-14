@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
                 new ResourceNotFoundException(String.format("Role ID %s not found",userId)));
         user.getRoles().add(role);
         role.getUsers().add(user);
-        return "successfull";
+        return "success";
     }
 
     @Override
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
                 new ResourceNotFoundException(String.format("Role ID %s not found",userId)));
         user.getRoles().remove(role);
         role.getUsers().remove(user);
-        return "successfull";
+        return "success";
     }
 
     @Override
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setName(userDTO.getName());
         userRepo.save(user);
-        return "successfull";
+        return "success";
     }
 
     @Override

@@ -15,8 +15,10 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(unique = true,length = 200)
-    private String url;
+
+    @Lob
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "product_id",referencedColumnName = "id")
     private Product product;

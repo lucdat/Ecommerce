@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         cartService.clear();
-        return "Successfull";
+        return "Success";
     }
 
     @Override
@@ -97,6 +97,6 @@ public class OrderServiceImpl implements OrderService {
         Orders order = orderRepo.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Order ID %s not found",id)));
         order.setStatus(OrderStatus.valueOf(status));
-        return "successfull";
+        return "success";
     }
 }
