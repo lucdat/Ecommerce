@@ -10,7 +10,7 @@
 ## IDE:
     • Intellij IDEA
 ## Database:
-    • MySQL database
+    • Postgresql database
 ## Features
 #### for clients:
     •  Sign up and sign in
