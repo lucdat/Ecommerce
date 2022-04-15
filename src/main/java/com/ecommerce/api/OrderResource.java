@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -28,8 +29,8 @@ public class OrderResource {
     }
 
     @PutMapping(value = "/order/{id}/status/{status}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateStatus(@PathVariable("id") long id,
-                                               @PathVariable("status") String status){
+    public ResponseEntity<Map<String,String>> updateStatus(@PathVariable("id") long id,
+                                            @PathVariable("status") String status){
         return ResponseEntity.ok().body(orderService.updateStatus(id,status));
     }
 }

@@ -3,6 +3,7 @@ package com.ecommerce.service.impl;
 import com.ecommerce.domain.*;
 import com.ecommerce.dto.domain.ImportItemDTO;
 import com.ecommerce.generators.ImportItemFK;
+import com.ecommerce.generators.ProductInStockFK;
 import com.ecommerce.repositories.*;
 import com.ecommerce.service.ImportItemService;
 import com.ecommerce.service.ImportService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +26,7 @@ public class ImportServiceImpl implements ImportService {
     private final UserRepo userRepo;
     private final SizeRepo sizeRepo;
     private final ColorRepo colorRepo;
+    private final ProductInStockRepo productInStockRepo;
 
     @Override
     public String checkOut(ImportItemService importItemService) {
@@ -62,35 +65,51 @@ public class ImportServiceImpl implements ImportService {
                         .stream().map(Size::getSize).collect(Collectors.toList());
                 Collection<String> colors = colorRepo.getColorByProductId(product.getId())
                         .stream().map(Color::getColor).collect(Collectors.toList());
+                Size size = sizeRepo.findBySize(dto.getSize());
+                Color color = colorRepo.findByColor(dto.getColor());
                 //if size doesn't exist in the product
                 if(!sizes.contains(dto.getSize())){
-                    Size size = sizeRepo.findBySize(dto.getSize());
                     //if size doesn't exist in the db
                     if(size==null){
                         size = new Size();
                         size.setSize(dto.getSize());
-                        Size saveSize = sizeRepo.save(size);
-                        product.getSizes().add(saveSize);
-                        saveSize.getProducts().add(product);
+                        size = sizeRepo.save(size);
+                        product.getSizes().add(size);
+                        size.getProducts().add(product);
                     }else{
                         product.getSizes().add(size);
                         size.getProducts().add(product);
                     }
                 }
                 //if color doesn't exist in the product
-                if(!colors.contains(dto.getColor())){
-                    Color color = colorRepo.findByColor(dto.getColor());
-                    if(color==null){
-                        color = new Color();
-                        color.setColor(dto.getColor());
-                        Color saveColor = colorRepo.save(color);
-                        saveColor.getProducts().add(product);
-                        product.getColors().add(saveColor);
-                    }else{
-                        color.getProducts().add(product);
-                        product.getColors().add(color);
-                    }
+                if(!colors.contains(dto.getColor()))
+                    if (color == null) {
+                    color = new Color();
+                    color.setColor(dto.getColor());
+                    color = colorRepo.save(color);
+                    color.getProducts().add(product);
+                    product.getColors().add(color);
+                } else {
+                    color.getProducts().add(product);
+                    product.getColors().add(color);
                 }
+
+                ProductInStockFK productInStockFK = new ProductInStockFK();
+                productInStockFK.setColorId(color.getId());
+                productInStockFK.setSizeId(color.getId());
+                productInStockFK.setProductId(product.getId());
+                List<ProductInStock> productInStocks = productInStockRepo
+                        .findByIdColorIdAndIdSizeIdAndIdProductId(productInStockFK.getColorId(), productInStockFK.getSizeId(), productInStockFK.getProductId());
+                ProductInStock productInStock;
+                if(productInStocks.isEmpty()){
+                    productInStock = new ProductInStock();
+                    productInStock.setId(productInStockFK);
+                    productInStock.setQuantity(dto.getQuantity());
+                }else{
+                    productInStock = productInStocks.get(0);
+                    productInStock.setQuantity(productInStock.getQuantity()+dto.getQuantity());
+                }
+                productInStockRepo.save(productInStock);
                 //update quantity
                 product.setQuantity(product.getQuantity()+dto.getQuantity());
                 productRepo.save(product);
@@ -103,30 +122,43 @@ public class ImportServiceImpl implements ImportService {
                 product.setPrice(0.0);
                 product.setAddAt(new Date());
                 product.setActiveFlag(false);
+                product.setQuantity(dto.getQuantity());
                 product = productRepo.save(product);
                 //add color,size to the product
-                Color color = colorRepo.findByColor(dto.getColor());
                 Size size = sizeRepo.findBySize(dto.getSize());
-                if(color==null){
-                    color = new Color();
-                    color.setColor(dto.getColor());
-                    Color saveColor = colorRepo.save(color);
-                    product.getColors().add(saveColor);
-                    saveColor.getProducts().add(product);
-                }else{
-                    product.getColors().add(color);
-                    color.getProducts().add(product);
-                }
+                Color color = colorRepo.findByColor(dto.getColor());
+                //if size doesn't exist in the db
                 if(size==null){
                     size = new Size();
                     size.setSize(dto.getSize());
-                    Size saveSize = sizeRepo.save(size);
-                    product.getSizes().add(saveSize);
-                    saveSize.getProducts().add(product);
-                }else{
-                    product.getSizes().add(size);
-                    size.getProducts().add(product);
+                    size = sizeRepo.save(size);
                 }
+                product.getSizes().add(size);
+                size.getProducts().add(product);
+                if(color==null){
+                    color = new Color();
+                    color.setColor(dto.getColor());
+                    color = colorRepo.save(color);
+                }
+                color.getProducts().add(product);
+                product.getColors().add(color);
+
+                ProductInStockFK productInStockFK = new ProductInStockFK();
+                productInStockFK.setColorId(color.getId());
+                productInStockFK.setSizeId(color.getId());
+                productInStockFK.setProductId(product.getId());
+                List<ProductInStock> productInStocks = productInStockRepo
+                        .findByIdColorIdAndIdSizeIdAndIdProductId(productInStockFK.getColorId(), productInStockFK.getSizeId(), productInStockFK.getProductId());
+                ProductInStock productInStock;
+                if(productInStocks.isEmpty()){
+                    productInStock = new ProductInStock();
+                    productInStock.setId(productInStockFK);
+                    productInStock.setQuantity(dto.getQuantity());
+                }else{
+                    productInStock = productInStocks.get(0);
+                    productInStock.setQuantity(productInStock.getQuantity()+dto.getQuantity());
+                }
+                productInStockRepo.save(productInStock);
             }
             //insert new importItem to the db
             ImportItem importItem = new ImportItem();

@@ -6,12 +6,10 @@ import com.ecommerce.dto.converters.OrderItemConverter;
 import com.ecommerce.dto.domain.OrderDTO;
 import com.ecommerce.dto.domain.OrderItemDTO;
 import com.ecommerce.dto.domain.PageOrderDTO;
+import com.ecommerce.exception.OrderStatusException;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.generators.OrderItemFK;
-import com.ecommerce.repositories.OrderItemRepo;
-import com.ecommerce.repositories.OrderRepo;
-import com.ecommerce.repositories.ProductRepo;
-import com.ecommerce.repositories.UserRepo;
+import com.ecommerce.repositories.*;
 import com.ecommerce.service.CartService;
 import com.ecommerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +32,9 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepo userRepo;
     private final OrderRepo orderRepo;
     private final OrderItemRepo orderItemRepo;
-
+    private final SizeRepo sizeRepo;
+    private final ColorRepo colorRepo;
+    private final ProductInStockRepo productInStockRepo;
     @Override
     public PageOrderDTO findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page-1,size);
@@ -93,10 +93,102 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String updateStatus(long id, String status) {
+    public Map<String,String> updateStatus(long id, String status) {
         Orders order = orderRepo.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Order ID %s not found",id)));
-        order.setStatus(OrderStatus.valueOf(status));
-        return "success";
+        Map<String,String> response;
+        switch (status){
+            case "PENDING":{
+                response = orderPending(order);
+                return response;
+            }
+            case "PROCESSING":{
+                response = orderProcessing(order);
+                if (response.isEmpty()) {
+                    response = new HashMap<>();
+                    response.put("message", "success");
+                }
+                return response;
+            }
+            case "DELIVERED":{
+                response = new HashMap<>();
+                response.put("message","Unable to change the status of the order delivered");
+                return response;
+            }
+            case "CANCEL":{
+                response = orderCancel(order);
+                return response;
+            }
+            default:throw new OrderStatusException(String.format("Status %s not valid",status));
+        }
+    }
+
+    private Map<String,String> orderCancel(Orders order) {
+        Map<String,String> response = new HashMap<>();
+        if(order.getStatus().equals(OrderStatus.PENDING) || order.getStatus().equals(OrderStatus.PROCESSING) ){
+            Collection<OrderItem> orderItems = orderItemRepo.findByOrderId(order.getId());
+            if(order.getStatus().equals(OrderStatus.PROCESSING)){
+                for(OrderItem item : orderItems){
+                    Color color = colorRepo.findByColor(item.getColor());
+                    Size size = sizeRepo.findBySize(item.getSize());
+                    Product product = productRepo.getById(item.getId().getProductId());
+                    List<ProductInStock> productInStock = productInStockRepo
+                            .findByIdColorIdAndIdSizeIdAndIdProductId(color.getId(),size.getId(),item.getId().getProductId());
+                    productInStock.get(0).setQuantity(productInStock.get(0).getQuantity() + item.getQuantity());
+                    product.setQuantity(product.getQuantity() + item.getQuantity());
+                }
+                response = new HashMap<>();
+                response.put("message","update status success");
+                order.setStatus(OrderStatus.CANCEL);
+                orderRepo.save(order);
+            }
+        }else{
+            response = new HashMap<>();
+            response.put("message","Unable to change the status of the order");
+        }
+        return response;
+    }
+
+    private Map<String,String> orderProcessing(Orders order) {
+        Collection<OrderItem> orderItems = orderItemRepo.findByOrderId(order.getId());
+        boolean check = true;
+        Map<String,String> response = new HashMap<>();
+        List<ProductInStock> productInStocks = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
+        for(OrderItem item : orderItems){
+            Color color = colorRepo.findByColor(item.getColor());
+            Size size = sizeRepo.findBySize(item.getSize());
+            Product product = productRepo.getById(item.getId().getProductId());
+            List<ProductInStock> productInStock = productInStockRepo
+                    .findByIdColorIdAndIdSizeIdAndIdProductId(color.getId(),size.getId(),item.getId().getProductId());
+            if(!productInStock.isEmpty() && productInStock.get(0).getQuantity() < item.getQuantity()){
+                check = false;
+                response.put(product.getName(),"Quantity is not enough");
+            }else if(!productInStock.isEmpty() && productInStock.get(0).getQuantity() > item.getQuantity()){
+                productInStock.get(0).setQuantity(productInStock.get(0).getQuantity() - item.getQuantity());
+                productInStock.add(productInStock.get(0));
+                product.setQuantity(product.getQuantity() - item.getQuantity());
+                products.add(product);
+            }
+        }
+        if(check){
+            for(Product product : products){
+                productRepo.save(product);
+            }
+            for(ProductInStock inStock : productInStocks){
+                productInStockRepo.save(inStock);
+            }
+            order.setStatus(OrderStatus.DELIVERED);
+            orderRepo.save(order);
+        }
+        return response;
+    }
+
+    private Map<String,String> orderPending(Orders order){
+        order.setStatus(OrderStatus.PROCESSING);
+        orderRepo.save(order);
+        Map<String,String> response = new HashMap<>();
+        response.put("message","update status success");
+        return response;
     }
 }

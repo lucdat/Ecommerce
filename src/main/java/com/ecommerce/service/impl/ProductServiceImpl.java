@@ -67,38 +67,32 @@ public class ProductServiceImpl implements ProductService {
         Product p = productRepo.findByCode(productDTO.getCode());
         if(p!=null)
             throw new UniqueConstrainException("code:Code already exists!");
-        Product productSave = productRepo.save(product);
+        product = productRepo.save(product);
         if(productDTO.getSizes()!=null){
             for(String s : productDTO.getSizes()){
                 Size size = sizeRepo.findBySize(s);
-                if(size!=null){
-                    productSave.getSizes().add(size);
-                    size.getProducts().add(productSave);
-                }else{
+                if(size==null){
                     size = new Size();
                     size.setSize(s);
-                    Size sizeSave = sizeRepo.save(size);
-                    productSave.getSizes().add(sizeSave);
-                    sizeSave.getProducts().add(productSave);
+                    size = sizeRepo.save(size);
                 }
+                product.getSizes().add(size);
+                size.getProducts().add(product);
             }
         }
         if(productDTO.getColors()!=null){
             for(String c : productDTO.getColors()){
                 Color color = colorRepo.findByColor(c);
-                if(color!=null){
-                    productSave.getColors().add(color);
-                    color.getProducts().add(productSave);
-                }else{
+                if(color==null){
                     color = new Color();
                     color.setColor(c);
-                    Color colorSave = colorRepo.save(color);
-                    productSave.getColors().add(color);
-                    colorSave.getProducts().add(productSave);
+                    color = colorRepo.save(color);
                 }
+                product.getColors().add(color);
+                color.getProducts().add(product);
             }
         }
-        return ProductConverter.covertToDTO(productSave);
+        return ProductConverter.covertToDTO(product);
     }
 
     @Override
