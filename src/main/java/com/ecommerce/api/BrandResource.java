@@ -4,6 +4,7 @@ import com.ecommerce.dto.domain.BrandDTO;
 import com.ecommerce.dto.domain.PageBrandDTO;
 import com.ecommerce.dto.domain.PageProductDTO;
 import com.ecommerce.service.BrandService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
+@Tag(name = "Retail Bank Account management application")
 public class BrandResource {
     private final BrandService brandService;
 

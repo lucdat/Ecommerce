@@ -6,6 +6,8 @@ import com.ecommerce.dto.domain.RegisterDTO;
 import com.ecommerce.dto.domain.UserDTO;
 import com.ecommerce.service.RoleService;
 import com.ecommerce.service.UserService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
