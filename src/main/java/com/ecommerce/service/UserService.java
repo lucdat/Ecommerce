@@ -12,4 +12,5 @@ public interface UserService {
     PageOrderDTO getListOrders(Long id,int page, int size);
     String update(UserDTO userDTO);
     Map<String,String> changePassword(PasswordDTO passwordDTO);
+    UserDTO findById(Long id);
 }

@@ -83,6 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/v1/user/{id}/orders").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/user/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/user/{id}").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_SALE")
                 .antMatchers(HttpMethod.GET, "/api/v1/orders").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/v1/order/{id}/items").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/order/{id}/status/{status}").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")

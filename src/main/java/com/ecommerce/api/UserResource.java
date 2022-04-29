@@ -24,7 +24,10 @@ public class UserResource {
                                               @RequestParam(required = false,defaultValue = "10") int size){
         return  ResponseEntity.ok().body(userService.findAll(page,size));
     }
-
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDTO> findByID(@PathVariable("id") Long id){
+        return  ResponseEntity.ok().body(userService.findById(id));
+    }
     @PostMapping(value = "/user",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody RegisterDTO register){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/api/user").toString());
