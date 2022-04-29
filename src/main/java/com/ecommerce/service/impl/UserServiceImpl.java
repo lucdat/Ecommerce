@@ -52,11 +52,11 @@ public class UserServiceImpl implements UserService {
         if(register!=null){
             User user = UserConverter.covertRegisterDTOToUser(register);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            User emailExist = userRepo.findByEmail(register.getEmail());
             User phoneExist = userRepo.findByEmail(register.getPhone());
             User usernameExist = userRepo.findByUsername(register.getUsername());
-            if(emailExist!=null){
-                throw new UniqueConstrainException("email:Email already exists!");
+            if(register.getEmail()!=null && !register.getEmail().isEmpty()){
+                User emailExist = userRepo.findByEmail(register.getEmail());
+                if(emailExist!=null) throw new UniqueConstrainException("email:Email already exists!");
             }
             if(phoneExist!=null){
                 throw new UniqueConstrainException("phone:Phone already exists!");
@@ -70,10 +70,8 @@ public class UserServiceImpl implements UserService {
                 saveUser.getOrders().add(o);
                 o.setUser(saveUser);
             }
-            if(register.getRoles()!=null){
-                Collection<Role> roles = register.getRoles().stream().map(roleRepo::findByName).collect(Collectors.toList());
-                saveUser.setRoles(roles);
-            }
+            Role role = roleRepo.findByName("ROLE_USER");
+            saveUser.getRoles().add(role);
             return UserConverter.covertToDTO(saveUser);
         }
         return null;

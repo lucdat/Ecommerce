@@ -7,6 +7,9 @@ import com.ecommerce.dto.domain.UserDTO;
 import com.ecommerce.service.RoleService;
 import com.ecommerce.service.UserService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.stream.IntStream;
 
 @SpringBootApplication
+@SecurityScheme(name = "ecommerce", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public class EcommerceApplication {
 
 	public static void main(String[] args) {
