@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/orders").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/v1/order/{id}/items").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/order/{id}/status/{status}").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
-                .anyRequest().hasAuthority("ROLE_ADMIN");
+                .antMatchers(HttpMethod.PUT, "/api/v1/**").hasAuthority("ROLE_ADMIN");
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new CustomAuthorizationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
