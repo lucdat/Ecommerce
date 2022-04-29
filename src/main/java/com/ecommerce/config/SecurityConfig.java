@@ -64,12 +64,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Public endpoints
         http.authorizeRequests()
                 .antMatchers("/api/v1/brands").permitAll()
-                .antMatchers("/api/v1/brand/{brandId}/products").permitAll()
+                .antMatchers("/api/v1/brand/{\\d+}/products").permitAll()
                 .antMatchers("/api/v1/cart/**").permitAll()
                 .antMatchers("//api/v1/categories").permitAll()
-                .antMatchers("/api/v1/category/{cateId}/products").permitAll()
+                .antMatchers("/api/v1/category/{\\d+}/products").permitAll()
                 .antMatchers("/api/v1/products").permitAll()
-                .antMatchers("/api/v1/product/{id}").permitAll()
+                .antMatchers("/api/v1/product/{\\d+}").permitAll()
                 .antMatchers("/api/v1/tags").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/v1/user").permitAll()
                 .antMatchers("/api/v1/user/changePassword").permitAll()
@@ -81,12 +81,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Set permissions on endpoints
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/v1/user/{id}/orders").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/user/{\\d+}/orders").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/user/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/v1/user/{id}").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_SALE")
+                .antMatchers(HttpMethod.GET, "/api/v1/user/{\\d+}").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_SALE")
                 .antMatchers(HttpMethod.GET, "/api/v1/orders").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/v1/order/{id}/items").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/v1/order/{id}/status/{status}").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/order/{\\d+}/items").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/v1/order/{\\d+}/status/{status}").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/**").hasAuthority("ROLE_ADMIN");
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class);
