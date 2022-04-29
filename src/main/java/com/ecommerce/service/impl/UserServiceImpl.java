@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
         if(register!=null){
             User user = UserConverter.covertRegisterDTOToUser(register);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            User phoneExist = userRepo.findByEmail(register.getPhone());
+            User phoneExist = userRepo.findByPhone(register.getPhone());
             User usernameExist = userRepo.findByUsername(register.getUsername());
             if(register.getEmail()!=null && !register.getEmail().isEmpty()){
                 User emailExist = userRepo.findByEmail(register.getEmail());
