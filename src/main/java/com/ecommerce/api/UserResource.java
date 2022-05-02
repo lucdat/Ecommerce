@@ -28,6 +28,11 @@ public class UserResource {
     public ResponseEntity<UserDTO> findByID(@PathVariable("id") Long id){
         return  ResponseEntity.ok().body(userService.findById(id));
     }
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity<UserDTO> findByUsername(@PathVariable("username") String username){
+        return  ResponseEntity.ok().body(userService.findByUsername(username));
+    }
     @PostMapping(value = "/user",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody RegisterDTO register){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/api/user").toString());

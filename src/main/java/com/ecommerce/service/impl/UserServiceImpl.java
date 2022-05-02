@@ -163,4 +163,11 @@ public class UserServiceImpl implements UserService {
                 new ResourceNotFoundException(String.format("User ID %s not found",id)));
         return UserConverter.covertToDTO(user);
     }
+
+    @Override
+    public UserDTO findByUsername(String username) {
+        User user = userRepo.findByUsername(username);
+         if(user == null) throw new ResourceNotFoundException(String.format("Username %s not found",username));
+        return UserConverter.covertToDTO(user);
+    }
 }
