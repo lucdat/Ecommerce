@@ -29,8 +29,8 @@ public class UserResource {
         return  ResponseEntity.ok().body(userService.findById(id));
     }
 
-    @GetMapping("/user/{username}")
-    public ResponseEntity<UserDTO> findByUsername(@PathVariable("username") String username){
+    @GetMapping("/user")
+    public ResponseEntity<UserDTO> findByUsername(@RequestParam("username") String username){
         return  ResponseEntity.ok().body(userService.findByUsername(username));
     }
     @PostMapping(value = "/user",produces = APPLICATION_JSON_VALUE)
