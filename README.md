@@ -28,7 +28,7 @@ LOGIN : Method: POST
         URL:https://ecommerce-back-end-spring.herokuapp.com/api/v1/login
         username:user3
         password:123
-https://ecommerce-back-end-spring.herokuapp.com/swagger-ui.html
+https://ecommerce-back-end-spring-boot.herokuapp.com/swagger-ui.html
 
 
 
