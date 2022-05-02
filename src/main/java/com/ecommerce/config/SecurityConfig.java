@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and();
         // Public endpoints
         http.authorizeRequests()
+                .antMatchers("/api/v1/login").permitAll()
                 .antMatchers("/api/v1/brands").permitAll()
                 .antMatchers("/api/v1/brand/{id:[\\\\d+]}/products").permitAll()
                 .antMatchers("/api/v1/cart/**").permitAll()
