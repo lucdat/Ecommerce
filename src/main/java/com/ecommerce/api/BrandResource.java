@@ -19,7 +19,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
-@Tag(name = "Retail Bank Account management application")
 public class BrandResource {
     private final BrandService brandService;
 
