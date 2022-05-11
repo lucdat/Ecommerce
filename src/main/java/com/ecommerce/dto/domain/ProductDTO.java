@@ -22,6 +22,7 @@ public class ProductDTO {
     private String shortDescription;
     private String detailDescription;
     private Double price;
+    private int gender;
     private Double competitivePrice;
     private Date addAt;
     Collection<ImageDTO> images;

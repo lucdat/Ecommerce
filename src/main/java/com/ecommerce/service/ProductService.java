@@ -7,7 +7,7 @@ import com.ecommerce.dto.domain.ProductFormDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductService {
-    PageProductDTO findAll(int page,int size);
+    PageProductDTO findAll(int activeFlag,int page,int size,int filter);
 
     ProductDTO findById(Long id);
 

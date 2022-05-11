@@ -42,9 +42,15 @@ public class ProductServiceImpl implements ProductService {
     private final CommentRepo commentRepo;
 
     @Override
-    public PageProductDTO findAll(int page, int size) {
+    public PageProductDTO findAll(int activeFlag,int page, int size,int filter) {
+        boolean active = activeFlag == 1 ? true : false;
         Pageable pageable = PageRequest.of(page-1,size, Sort.by(Sort.Direction.ASC,"price"));
-        Page<Product> products = productRepo.findByActiveFlagIs(true,pageable);
+        Page<Product> products ;
+       if(filter == 1 || filter == 2){
+           products =productRepo.findByActiveFlagIsAndAndGenderIs(active,filter,pageable);
+       }else{
+           products =productRepo.findByActiveFlagIs(active,pageable);
+       }
         products.forEach(product -> {
             product.setImages(imageRepo.findByProductId(product.getId()));
             product.setSizes(sizeRepo.getSizeByProductId(product.getId()));

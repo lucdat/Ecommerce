@@ -11,6 +11,8 @@ import java.util.Collection;
 
 public interface ProductRepo extends JpaRepository<Product,Long> {
     Page<Product> findByActiveFlagIs(Boolean value,Pageable pageable);
+    Page<Product> findByActiveFlagIsAndAndGenderIs(Boolean value,int gender,Pageable pageable);
+    Page<Product> findByActiveFlagIs(Boolean value,int gender,Pageable pageable);
     Product findByCode(String code);
     Page<Product> findByCategoryIdIs(Long value, Pageable pageable);
     Page<Product> findByBrandIdIs(Long value, Pageable pageable);

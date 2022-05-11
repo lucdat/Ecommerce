@@ -4,6 +4,8 @@ import com.ecommerce.dto.domain.CategoryDTO;
 import com.ecommerce.dto.domain.PageCategoryDTO;
 import com.ecommerce.dto.domain.PageProductDTO;
 import com.ecommerce.service.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,23 +33,24 @@ public class CategoryResource {
     public ResponseEntity<CategoryDTO> findById(@PathVariable("id") long id){
         return ResponseEntity.ok().body(categoryService.findById(id));
     }
-
+    @Operation(summary = "Create category", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/category",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CategoryDTO> saveCategory(@Valid @RequestBody CategoryDTO category){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/api/v1/category").toString());
         return ResponseEntity.created(uri).body(categoryService.save(category));
     }
-
+    @Operation(summary = "Update category", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "/category/update",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO category){
         return ResponseEntity.ok().body(categoryService.update(category));
     }
-
-    @PostMapping(value = "/category/{cateId}/product/{productId}",produces = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Add product to category", security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping(value = "/category/{cateId}/add/product/{productId}",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addProductToCategory(@PathVariable("cateId") Long cateId,
                                                             @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(categoryService.addProduct(cateId,productId));
     }
+    @Operation(summary = "Remove product in category", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/category/{cateId}/remove/product/{productId}",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> removeProduct(@PathVariable("cateId") Long cateId,
                                                        @PathVariable("productId") Long productId){

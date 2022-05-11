@@ -67,7 +67,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/brands").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/user/").permitAll()
                 .antMatchers("/api/v1/brand/{id:[\\\\d+]}/products").permitAll()
-                .antMatchers("/api/v1/cart/**").permitAll()
                 .antMatchers("//api/v1/categories").permitAll()
                 .antMatchers("/api/v1/category/{id:[\\\\d+]}/products").permitAll()
                 .antMatchers("/api/v1/products").permitAll()
@@ -83,13 +82,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Set permissions on endpoints
         http.authorizeRequests()
+                .antMatchers("/api/v1/cart/**").hasAuthority("ROLE_USER")
                 .antMatchers(HttpMethod.GET, "/api/v1/user/{id:[\\\\d+]}/orders").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/user/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/v1/user/{id:[\\\\d+]}").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_SALE")
                 .antMatchers(HttpMethod.GET, "/api/v1/orders").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/v1/order/{id:[\\\\d+]}/items").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/order/{id:[\\\\d+]}/status/{status}").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/v1/**").hasAuthority("ROLE_ADMIN");
+                .antMatchers(HttpMethod.PUT, "/api/v1/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/v1/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/api/v1/**").hasAuthority("ROLE_ADMIN");
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new CustomAuthorizationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);

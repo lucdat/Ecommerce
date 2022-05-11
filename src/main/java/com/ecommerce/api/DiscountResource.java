@@ -2,6 +2,8 @@ package com.ecommerce.api;
 
 import com.ecommerce.dto.domain.*;
 import com.ecommerce.service.DiscountService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,20 +29,24 @@ public class DiscountResource {
     public ResponseEntity<DiscountDTO> findById(@PathVariable("id") Long id){
         return ResponseEntity.ok().body(discountService.findById(id));
     }
+    @Operation(summary = "Create discount", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/discount",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<DiscountDTO> saveBrand(@Valid @RequestBody DiscountDTO discountDTO){
+    public ResponseEntity<DiscountDTO> createDiscount(@Valid @RequestBody DiscountDTO discountDTO){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/api/v1/discount").toString());
         return ResponseEntity.created(uri).body(discountService.save(discountDTO));
     }
+    @Operation(summary = "Update discount", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping("/discount/update")
-    public ResponseEntity<DiscountDTO> updateCategory(@Valid @RequestBody DiscountDTO discountDTO){
+    public ResponseEntity<DiscountDTO> updateDiscount(@Valid @RequestBody DiscountDTO discountDTO){
         return ResponseEntity.ok().body(discountService.update(discountDTO));
     }
-    @PostMapping(value = "/discount/{discountId}/product/{productId}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addProductToBrand(@PathVariable("discountId") Long discountId,
+    @Operation(summary = "Add product to discount", security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping(value = "/discount/{discountId}/add/product/{productId}",produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addProduct(@PathVariable("discountId") Long discountId,
                                                     @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(discountService.addProduct(discountId,productId));
     }
+    @Operation(summary = "Remove product in discount", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/discount/{discountId}/remove/product/{productId}",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> removeProduct(@PathVariable("discountId") Long discountId,
                                                 @PathVariable("productId") Long productId){

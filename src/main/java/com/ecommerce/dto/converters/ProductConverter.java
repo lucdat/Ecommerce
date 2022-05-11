@@ -43,6 +43,7 @@ public class ProductConverter {
                 comment.setUsername(c.getUser().getUsername());
                 comment.setMessage(c.getMessage());
                 comment.setDate(c.getDate());
+                comment.setUserId(c.getUser().getId());
                 comments.add(comment);
             }
             dto.setId(product.getId());
@@ -56,6 +57,7 @@ public class ProductConverter {
             dto.setAddAt(product.getAddAt());
             dto.setShortDescription(product.getShortDescription());
             dto.setDetailDescription(product.getDetailDescription());
+            dto.setGender(product.getGender());
             dto.setImages(images);
             dto.setSizes(sizes);
             dto.setColors(colors);
@@ -87,6 +89,7 @@ public class ProductConverter {
             product.setPrice(dto.getPrice());
             product.setCompetitivePrice(dto.getCompetitivePrice());
             Date date = new Date(System.currentTimeMillis());
+            product.setGender(dto.getGender());
             product.setAddAt(date);
             product.setActiveFlag(true);
             product.setNewProduct(false);

@@ -28,6 +28,7 @@ public class Product {
     private Boolean bestSeller;
     @Column(columnDefinition = "boolean default false")
     private Boolean hotProduct;
+    private int gender;
     @Column(length = 150)
     private String shortDescription;
     @Column(columnDefinition = "text")

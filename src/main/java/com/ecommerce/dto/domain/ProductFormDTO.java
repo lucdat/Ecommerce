@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Collection;
 
 @Data
@@ -31,6 +29,8 @@ public class ProductFormDTO {
     private String detailDescription;
     @Min(0)
     private Double price;
+    @Min(1) @Max(2)
+    private int gender;
     private Double competitivePrice;
     Collection<String> sizes;
     Collection<String> colors;

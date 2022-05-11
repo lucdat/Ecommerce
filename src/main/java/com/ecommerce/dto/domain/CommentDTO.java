@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDTO {
+    private long userId;
     private String username;
     @NotBlank(message = "The message must be not blank")
     @Size(  min = 1
