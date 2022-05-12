@@ -15,6 +15,7 @@ public class UserConverter {
         userDTO.setPhone(user.getPhone());
         userDTO.setName(user.getName());
         userDTO.setUsername(user.getUsername());
+        userDTO.setActiveFlag(user.getActiveFlag());
         userDTO.setEmail(user.getEmail());
         Collection<RoleDTO> roles = convertToListRoleDTO(user.getRoles());
         userDTO.setRoles(roles);

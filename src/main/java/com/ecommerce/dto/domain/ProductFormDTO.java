@@ -31,6 +31,7 @@ public class ProductFormDTO {
     private Double price;
     @Min(1) @Max(2)
     private int gender;
+    private Boolean activeFlag;
     private Double competitivePrice;
     Collection<String> sizes;
     Collection<String> colors;

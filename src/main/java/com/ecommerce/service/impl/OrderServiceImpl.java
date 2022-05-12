@@ -36,9 +36,15 @@ public class OrderServiceImpl implements OrderService {
     private final ColorRepo colorRepo;
     private final ProductInStockRepo productInStockRepo;
     @Override
-    public PageOrderDTO findAll(int page, int size) {
+    public PageOrderDTO findAll(int page, int size,String status) {
         Pageable pageable = PageRequest.of(page-1,size);
-        Page<Orders> orders = orderRepo.findAll(pageable);
+        Page<Orders> orders;
+        if(status.equals(OrderStatus.PENDING.toString())
+                ||status.equals(OrderStatus.PROCESSING.toString())
+                ||status.equals(OrderStatus.DELIVERED.toString())
+                ||status.equals(OrderStatus.DELIVERED.toString())){
+            orders = orderRepo.getOrdersByStatus(OrderStatus.valueOf(status),pageable);
+        }else orders = orderRepo.findAll(pageable);
         return OrderConverter.convertToPageDTO(orders);
     }
 
@@ -133,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
                     Size size = sizeRepo.findBySize(item.getSize());
                     Product product = productRepo.getById(item.getId().getProductId());
                     List<ProductInStock> productInStock = productInStockRepo
-                            .findByIdColorIdAndIdSizeIdAndIdProductId(color.getId(),size.getId(),item.getId().getProductId());
+                            .findByIdColorIdAndIdSizeIdAndIdProductIdAndIdGender(color.getId(),size.getId(),item.getId().getProductId(), product.getGender());
                     productInStock.get(0).setQuantity(productInStock.get(0).getQuantity() + item.getQuantity());
                     product.setQuantity(product.getQuantity() + item.getQuantity());
                 }
@@ -153,14 +159,14 @@ public class OrderServiceImpl implements OrderService {
         Collection<OrderItem> orderItems = orderItemRepo.findByOrderId(order.getId());
         boolean check = true;
         Map<String,String> response = new HashMap<>();
-        List<ProductInStock> productInStocks = new ArrayList<>();
+        List<ProductInStock> productInStock = new ArrayList<>();
         List<Product> products = new ArrayList<>();
         for(OrderItem item : orderItems){
             Color color = colorRepo.findByColor(item.getColor());
             Size size = sizeRepo.findBySize(item.getSize());
             Product product = productRepo.getById(item.getId().getProductId());
-            List<ProductInStock> productInStock = productInStockRepo
-                    .findByIdColorIdAndIdSizeIdAndIdProductId(color.getId(),size.getId(),item.getId().getProductId());
+            productInStock = productInStockRepo
+                    .findByIdColorIdAndIdSizeIdAndIdProductIdAndIdGender(color.getId(),size.getId(),item.getId().getProductId(), item.getGender());
             if(!productInStock.isEmpty() && productInStock.get(0).getQuantity() < item.getQuantity()){
                 check = false;
                 response.put(product.getName(),"Quantity is not enough");
@@ -175,7 +181,7 @@ public class OrderServiceImpl implements OrderService {
             for(Product product : products){
                 productRepo.save(product);
             }
-            for(ProductInStock inStock : productInStocks){
+            for(ProductInStock inStock : productInStock){
                 productInStockRepo.save(inStock);
             }
             order.setStatus(OrderStatus.DELIVERED);

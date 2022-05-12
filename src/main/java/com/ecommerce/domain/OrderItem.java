@@ -24,6 +24,7 @@ public class OrderItem {
     @JoinColumn(name = "product_id")
     private Product product;
     private int quantity;
+    private int gender;
     private String name;
     @Column(insertable = false,updatable = false)
     private String size;

@@ -58,6 +58,7 @@ public class ProductConverter {
             dto.setShortDescription(product.getShortDescription());
             dto.setDetailDescription(product.getDetailDescription());
             dto.setGender(product.getGender());
+            dto.setActiveFlag(product.getActiveFlag());
             dto.setImages(images);
             dto.setSizes(sizes);
             dto.setColors(colors);
@@ -91,7 +92,7 @@ public class ProductConverter {
             Date date = new Date(System.currentTimeMillis());
             product.setGender(dto.getGender());
             product.setAddAt(date);
-            product.setActiveFlag(true);
+            product.setActiveFlag(dto.getActiveFlag());
             product.setNewProduct(false);
             return product;
         }

@@ -31,6 +31,7 @@ public class ImportItem {
     private String size;
     @Column(insertable = false,updatable = false)
     private String color;
+    private int gender;
     @Column(columnDefinition = "double precision")
     private double totalPrice;
 }

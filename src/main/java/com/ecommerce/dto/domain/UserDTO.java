@@ -14,6 +14,7 @@ public class UserDTO {
     private String name;
     private String username;
     private String email;
+    private Boolean activeFlag;
     private Collection<RoleDTO> roles = new HashSet<>();
 
 }

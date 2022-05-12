@@ -48,6 +48,7 @@ public class CartServiceImpl implements CartService {
             orderItem.setName(product.getName());
             orderItem.setColor(cartDTO.getColor());
             orderItem.setSize(cartDTO.getSize());
+            orderItem.setGender(cartDTO.getGender());
             orderItem.setSale(sale);
             if(sale>0){
                 orderItem.setTotalPrice(orderItem.getPrice()*orderItem.getQuantity()* orderItem.getSale());

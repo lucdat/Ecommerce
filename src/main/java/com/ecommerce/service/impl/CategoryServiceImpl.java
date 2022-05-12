@@ -93,7 +93,8 @@ public class CategoryServiceImpl implements CategoryService {
     public PageProductDTO getListProducts(Long cateId,int page,int size) {
         if(cateId!=null&& !categoryRepo.existsById(cateId))
             throw new ResourceNotFoundException(String.format("Category ID %S not found",cateId));
-            Pageable pageable = PageRequest.of(page-1,size);
+
+        Pageable pageable = PageRequest.of(page-1,size);
             Page<Product> products = productRepo.findByCategoryIdIs(cateId,pageable);
             return ProductConverter.covertToPageDTO(products);
     }

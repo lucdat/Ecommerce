@@ -10,6 +10,7 @@ public class OrderItemConverter {
               dto.setId(orderItem.getId());
               dto.setName(orderItem.getName());
               dto.setSize(orderItem.getSize());
+              dto.setGender(orderItem.getGender());
               dto.setColor(orderItem.getColor());
               dto.setPrice(orderItem.getTotalPrice()/ orderItem.getQuantity());
               dto.setQuantity(orderItem.getQuantity());

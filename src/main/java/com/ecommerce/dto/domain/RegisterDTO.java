@@ -39,6 +39,7 @@ public class RegisterDTO {
             ,max=15
             ,message = "The phone must be between {min} and {max} characters")
     private String phone;
+    @NotBlank(message = "The email must be not blank")
     @Size(  min = 10
             ,max=100
             ,message = "The must be between {min} and {max} characters")

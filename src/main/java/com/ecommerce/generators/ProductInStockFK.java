@@ -21,4 +21,6 @@ public class ProductInStockFK implements Serializable {
     private long sizeId;
     @Column(name = "product_id")
     private long productId;
+    @Column(name = "gender")
+    private int gender;
 }

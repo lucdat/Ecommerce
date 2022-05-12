@@ -23,6 +23,7 @@ public class OrderItemDTO {
     @NotBlank(message = "The color must be not blank")
     private String color;
     private Double price;
+    private int gender;
     @Min(1)
     private int quantity;
     private Double sale;

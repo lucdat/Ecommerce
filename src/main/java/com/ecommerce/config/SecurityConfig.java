@@ -1,7 +1,6 @@
 package com.ecommerce.config;
 
 import com.ecommerce.security.JwtUtils;
-import com.ecommerce.security.filter.CustomAuthenticationFilter;
 import com.ecommerce.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -39,9 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter =
-                new CustomAuthenticationFilter(authenticationManagerBean(),jwtUtils);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
         // Enable CORS and disable CSRF
         http = http.cors().and().csrf().disable();
         // Set session management to stateless
@@ -64,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Public endpoints
         http.authorizeRequests()
                 .antMatchers("/api/v1/login").permitAll()
+                .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/brands").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/user/").permitAll()
                 .antMatchers("/api/v1/brand/{id:[\\\\d+]}/products").permitAll()
@@ -92,8 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/v1/**").hasAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/v1/**").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/api/v1/**").hasAuthority("ROLE_ADMIN");
-        http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(corsFilter());
         http.addFilterBefore(new CustomAuthorizationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
     }
 

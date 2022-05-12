@@ -49,32 +49,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO save(RegisterDTO register) {
-        if(register!=null){
             User user = UserConverter.covertRegisterDTOToUser(register);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            User emailExist = userRepo.findByEmail(register.getEmail());
             User phoneExist = userRepo.findByPhone(register.getPhone());
             User usernameExist = userRepo.findByUsername(register.getUsername());
-            if(register.getEmail()!=null && !register.getEmail().isEmpty()){
-                User emailExist = userRepo.findByEmail(register.getEmail());
-                if(emailExist!=null) throw new UniqueConstrainException("email:Email already exists!");
-            }
-            if(phoneExist!=null){
-                throw new UniqueConstrainException("phone:Phone already exists!");
-            }
-            if(usernameExist!=null){
-                throw new UniqueConstrainException("username:Username already exists!");
-            }
+
+            if(phoneExist!=null) throw new UniqueConstrainException("phone:Phone already exists!");
+            if(usernameExist!=null) throw new UniqueConstrainException("username:Username already exists!");
+            if(emailExist!=null) throw new UniqueConstrainException("email:Email already exists!");
+
             User saveUser = userRepo.save(user);
-            Collection<Orders> orders = orderRepo.findByPhone(register.getPhone());
-            for(Orders o : orders){
-                saveUser.getOrders().add(o);
-                o.setUser(saveUser);
-            }
             Role role = roleRepo.findByName("ROLE_USER");
             saveUser.getRoles().add(role);
             return UserConverter.covertToDTO(saveUser);
-        }
-        return null;
     }
 
 
@@ -113,61 +101,20 @@ public class UserServiceImpl implements UserService {
                 new ResourceNotFoundException(String.format("User ID %s not found",userDTO.getId())));
         if(!userDTO.getPhone().equals(user.getPhone())){
             User phoneExist = userRepo.findByPhone(user.getPhone());
-            if(phoneExist!=null){
-                throw new UniqueConstrainException("phone:Phone already exists!");
-            }
+            if(phoneExist!=null) throw new UniqueConstrainException("phone:Phone already exists!");
         }
-        if(!userDTO.getEmail().equals(user.getEmail())){
-            User emailExist = userRepo.findByEmail(user.getEmail());
-            if(emailExist!=null){
-                throw new UniqueConstrainException("email:email already exists!");
-            }
-        }
+        User emailExist = userRepo.findByEmail(user.getEmail());
+            if(emailExist!=null) throw new UniqueConstrainException("email:email already exists!");
         user.setPhone(userDTO.getPhone());
         user.setEmail(userDTO.getEmail());
         user.setName(userDTO.getName());
         userRepo.save(user);
         return "success";
     }
-
-    @Override
-    public Map<String, String> changePassword(PasswordDTO passwordDTO) {
-        Map<String,String> response = new HashMap<>();
-        User user = userRepo.findByUsername(passwordDTO.getUsername());
-        if(user==null) {
-            throw new ResourceNotFoundException(String.format("%s not found",passwordDTO.getUsername()));
-        }
-        else{
-            if(!passwordEncoder.matches(passwordDTO.getPasswordOld(), user.getPassword())){
-                response.put("message","Password old not valid");
-            }else{
-                if(!passwordDTO.getNewPassword().equals(passwordDTO.getConfirmPassword())){
-                    response.put("message","Password not valid");
-                }else{
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    user.getRoles().forEach(role-> authorities.add(new SimpleGrantedAuthority(role.getName())));
-                    String access_token = jwtUtils.generateToken(new org.springframework.security.core.userdetails
-                            .User(user.getUsername(),passwordEncoder.encode(passwordDTO.getNewPassword()), authorities));
-                    user.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
-                    userRepo.save(user);
-                    response.put("access_token",access_token);
-                }
-            }
-        }
-        return response;
-    }
-
     @Override
     public UserDTO findById(Long id) {
         User user = userRepo.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("User ID %s not found",id)));
-        return UserConverter.covertToDTO(user);
-    }
-
-    @Override
-    public UserDTO findByUsername(String username) {
-        User user = userRepo.findByUsername(username);
-         if(user == null) throw new ResourceNotFoundException(String.format("Username %s not found",username));
+                new ResourceNotFoundException(String.format("User ID %s not found", id)));
         return UserConverter.covertToDTO(user);
     }
 }

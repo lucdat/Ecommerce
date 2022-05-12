@@ -25,6 +25,7 @@ public class ProductDTO {
     private int gender;
     private Double competitivePrice;
     private Date addAt;
+    private Boolean activeFlag;
     Collection<ImageDTO> images;
     Collection<String> sizes;
     Collection<String> colors;

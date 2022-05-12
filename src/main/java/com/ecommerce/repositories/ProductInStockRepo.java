@@ -8,5 +8,5 @@ import java.util.List;
 
 
 public interface ProductInStockRepo extends JpaRepository<ProductInStock, ProductInStockFK> {
-    List<ProductInStock> findByIdColorIdAndIdSizeIdAndIdProductId(Long colorId, Long sizeId, Long productId );
+    List<ProductInStock> findByIdColorIdAndIdSizeIdAndIdProductIdAndIdGender(Long colorId, Long sizeId, Long productId,int gender);
 }

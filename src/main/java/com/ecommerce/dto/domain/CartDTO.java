@@ -19,6 +19,8 @@ public class CartDTO {
     private String size;
     @NotBlank(message = "The color must be not blank")
     private String color;
+    @Min(1) @Max(2)
+    private int gender;
     @Min(1)
     @Max(1000)
     private int quantity;

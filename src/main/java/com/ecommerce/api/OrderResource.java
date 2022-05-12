@@ -1,5 +1,6 @@
 package com.ecommerce.api;
 
+import com.ecommerce.domain.OrderStatus;
 import com.ecommerce.dto.domain.OrderItemDTO;
 import com.ecommerce.dto.domain.PageOrderDTO;
 import com.ecommerce.service.OrderService;
@@ -22,9 +23,10 @@ public class OrderResource {
 
     @Operation(summary = "Get list orders", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/orders")
-    public ResponseEntity<PageOrderDTO> findAll(@RequestParam(required = false,defaultValue = "1") int page,
+    public ResponseEntity<PageOrderDTO> findAll(@RequestParam(required = false,defaultValue = "PENDING")String status,
+                                                @RequestParam(required = false,defaultValue = "1") int page,
                                                 @RequestParam(required = false,defaultValue = "10") int size){
-        return  ResponseEntity.ok().body(orderService.findAll(page,size));
+        return  ResponseEntity.ok().body(orderService.findAll(page,size,status));
     }
     @Operation(summary = "Get list order items", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/order/{id}/items")

@@ -8,6 +8,7 @@ import com.ecommerce.dto.domain.PageOrderDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 
@@ -16,13 +17,14 @@ public class OrderConverter {
         if(order!=null){
             OrderDTO dto = new OrderDTO();
             dto.setId(order.getId());
-            dto.setName(order.getName());
-            dto.setPhone(order.getPhone());
-            dto.setEmail(order.getEmail());
+            dto.setName(order.getUser().getName());
+            dto.setPhone(order.getUser().getPhone());
+            dto.setEmail(order.getUser().getEmail());
             dto.setAddress(order.getAddress());
             dto.setNote(order.getNote());
             dto.setAmount(order.getAmount());
             dto.setStatus(order.getStatus());
+            dto.setDate(order.getDate());
             dto.setTotalPrice(order.getTotalPrice());
             return dto;
         }
@@ -38,16 +40,11 @@ public class OrderConverter {
     }
 
     public static Orders convertDtoToEntity(OrderDTO orderDTO){
-        if(orderDTO!=null){
             Orders order = new Orders();
-            order.setName(orderDTO.getName());
             order.setAddress(orderDTO.getAddress());
-            order.setPhone(orderDTO.getPhone());
-            order.setEmail(orderDTO.getEmail());
             order.setNote(orderDTO.getNote());
             order.setStatus(OrderStatus.PENDING);
+            order.setDate(new Date());
             return order;
-        }
-        return null;
     }
 }

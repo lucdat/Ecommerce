@@ -22,6 +22,8 @@ public class ImportItemDTO {
     private String size;
     @NotBlank(message = "color must be not blank")
     private String color;
+    @Min(1) @Max(2)
+    private int gender;
     @Min(1)
     @Max(10000)
     private int quantity;

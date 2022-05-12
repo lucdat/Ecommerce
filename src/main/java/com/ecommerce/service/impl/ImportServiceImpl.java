@@ -74,12 +74,9 @@ public class ImportServiceImpl implements ImportService {
                         size = new Size();
                         size.setSize(dto.getSize());
                         size = sizeRepo.save(size);
-                        product.getSizes().add(size);
-                        size.getProducts().add(product);
-                    }else{
-                        product.getSizes().add(size);
-                        size.getProducts().add(product);
                     }
+                    product.getSizes().add(size);
+                    size.getProducts().add(product);
                 }
                 //if color doesn't exist in the product
                 if(!colors.contains(dto.getColor()))
@@ -98,8 +95,9 @@ public class ImportServiceImpl implements ImportService {
                 productInStockFK.setColorId(color.getId());
                 productInStockFK.setSizeId(color.getId());
                 productInStockFK.setProductId(product.getId());
+                productInStockFK.setGender(productInStockFK.getGender());
                 List<ProductInStock> productInStocks = productInStockRepo
-                        .findByIdColorIdAndIdSizeIdAndIdProductId(productInStockFK.getColorId(), productInStockFK.getSizeId(), productInStockFK.getProductId());
+                        .findByIdColorIdAndIdSizeIdAndIdProductIdAndIdGender(productInStockFK.getColorId(), productInStockFK.getSizeId(), productInStockFK.getProductId(), productInStockFK.getGender());
                 ProductInStock productInStock;
                 if(productInStocks.isEmpty()){
                     productInStock = new ProductInStock();
@@ -123,6 +121,7 @@ public class ImportServiceImpl implements ImportService {
                 product.setAddAt(new Date());
                 product.setActiveFlag(false);
                 product.setQuantity(dto.getQuantity());
+                product.setGender(dto.getGender());
                 product = productRepo.save(product);
                 //add color,size to the product
                 Size size = sizeRepo.findBySize(dto.getSize());
@@ -147,8 +146,9 @@ public class ImportServiceImpl implements ImportService {
                 productInStockFK.setColorId(color.getId());
                 productInStockFK.setSizeId(color.getId());
                 productInStockFK.setProductId(product.getId());
+                productInStockFK.setGender(product.getGender());
                 List<ProductInStock> productInStocks = productInStockRepo
-                        .findByIdColorIdAndIdSizeIdAndIdProductId(productInStockFK.getColorId(), productInStockFK.getSizeId(), productInStockFK.getProductId());
+                        .findByIdColorIdAndIdSizeIdAndIdProductIdAndIdGender(productInStockFK.getColorId(), productInStockFK.getSizeId(), productInStockFK.getProductId(),productInStockFK.getGender());
                 ProductInStock productInStock;
                 if(productInStocks.isEmpty()){
                     productInStock = new ProductInStock();
@@ -170,6 +170,7 @@ public class ImportServiceImpl implements ImportService {
             importItem.setPrice(dto.getPrice());
             importItem.setSize(dto.getSize());
             importItem.setColor(dto.getColor());
+            importItem.setGender(dto.getGender());
             ImportItem saveImportItem = importItemRepo.save(importItem);
             //set relationship
             saveImport.getImportItems().add(saveImportItem);

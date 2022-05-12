@@ -64,10 +64,4 @@ public class UserResource {
                                                 @PathVariable("roleId") Long roleId){
         return ResponseEntity.ok().body(userService.removeRoleInUser(userId,roleId));
     }
-    @Operation(summary = "Change password", security = @SecurityRequirement(name = "bearerAuth"))
-    @PostMapping(value="user/changePassword",produces =  APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String,String>> changePassword(@Valid @RequestBody PasswordDTO passwordDTO){
-        return ResponseEntity.ok().body(userService.changePassword(passwordDTO));
-    }
-
 }
