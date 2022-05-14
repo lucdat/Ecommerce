@@ -12,9 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +27,8 @@ public class ImportServiceImpl implements ImportService {
     private final ProductInStockRepo productInStockRepo;
 
     @Override
-    public String checkOut(ImportItemService importItemService) {
+    public Map<String,String> checkOut(ImportItemService importItemService) {
+        Map<String,String> response = new HashMap<>();
         //insert import to the db
         Import anImport = new Import();
         anImport.setAmount(importItemService.amount());
@@ -176,7 +175,7 @@ public class ImportServiceImpl implements ImportService {
             saveImport.getImportItems().add(saveImportItem);
             product.getImportItems().add(saveImportItem);
         }
-
-        return "success";
+        response.put("message","success");
+        return response;
     }
 }

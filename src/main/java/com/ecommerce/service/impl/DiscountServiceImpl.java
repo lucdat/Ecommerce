@@ -18,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -59,7 +61,8 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public String addProduct(Long discountId, Long productId) {
+    public Map<String,String> addProduct(Long discountId, Long productId) {
+        Map<String,String> response = new HashMap<>();
         if(discountId!=null && productId!=null){
             Discount discount = discountRepo.findById(discountId).orElseThrow(() ->
                     new ResourceNotFoundException(String.format("Discount ID %s not found",discountId)));
@@ -67,13 +70,14 @@ public class DiscountServiceImpl implements DiscountService {
                     new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             discount.getProducts().add(product);
             product.getDiscounts().add(discount);
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override
-    public String removeProduct(Long discountId, Long productId) {
+    public Map<String,String> removeProduct(Long discountId, Long productId) {
+        Map<String,String> response = new HashMap<>();
         if(discountId!=null && productId!=null){
             Discount discount = discountRepo.findById(discountId).orElseThrow(() ->
                     new ResourceNotFoundException(String.format("Discount ID %s not found",discountId)));
@@ -81,9 +85,9 @@ public class DiscountServiceImpl implements DiscountService {
                     new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             discount.getProducts().remove(product);
             product.getDiscounts().remove(discount);
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override

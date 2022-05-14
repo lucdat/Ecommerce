@@ -25,7 +25,8 @@ public class CartServiceImpl implements CartService {
     private Map<String, OrderItemDTO> ORDER_ITEM = new HashMap<>();
 
     @Override
-    public String add(CartDTO cartDTO) {
+    public Map<String,String> add(CartDTO cartDTO) {
+        Map<String,String> response = new HashMap<>();
         Product product = productRepo.findById(cartDTO.getProductId()).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Product ID %s not found",cartDTO.getProductId())));
         Collection<Discount> discounts = discountRepo.getSizeByProductId(product.getId());
@@ -57,16 +58,18 @@ public class CartServiceImpl implements CartService {
             }
             ORDER_ITEM.put(cartDTO.key(), orderItem);
         }
-        return "success";
+        response.put("message","success");
+        return response;
     }
 
     @Override
-    public String delete(CartDTO cartDTO) {
+    public Map<String,String> delete(CartDTO cartDTO) {
+        Map<String,String> response = new HashMap<>();
         if(ORDER_ITEM.containsKey(cartDTO.key())){
             ORDER_ITEM.remove(cartDTO.key());
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override
@@ -102,9 +105,11 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public String clear() {
+    public Map<String,String> clear() {
+        Map<String,String> response = new HashMap<>();
         ORDER_ITEM.clear();
-        return "success";
+        response.put("message","success");
+        return response;
     }
 
     @Override

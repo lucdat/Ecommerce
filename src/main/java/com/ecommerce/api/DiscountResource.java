@@ -11,6 +11,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -42,13 +44,13 @@ public class DiscountResource {
     }
     @Operation(summary = "Add product to discount", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/discount/{discountId}/add/product/{productId}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addProduct(@PathVariable("discountId") Long discountId,
-                                                    @PathVariable("productId") Long productId){
+    public ResponseEntity<Map<String,String>> addProduct(@PathVariable("discountId") Long discountId,
+                                                                                     @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(discountService.addProduct(discountId,productId));
     }
     @Operation(summary = "Remove product in discount", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/discount/{discountId}/remove/product/{productId}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> removeProduct(@PathVariable("discountId") Long discountId,
+    public ResponseEntity< Map<String,String>> removeProduct(@PathVariable("discountId") Long discountId,
                                                 @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(discountService.removeProduct(discountId,productId));
     }

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 
 import java.net.URI;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -46,13 +47,13 @@ public class CategoryResource {
     }
     @Operation(summary = "Add product to category", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/category/{cateId}/add/product/{productId}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addProductToCategory(@PathVariable("cateId") Long cateId,
-                                                            @PathVariable("productId") Long productId){
+    public ResponseEntity<Map<String,String>> addProductToCategory(@PathVariable("cateId") Long cateId,
+                                                                   @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(categoryService.addProduct(cateId,productId));
     }
     @Operation(summary = "Remove product in category", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/category/{cateId}/remove/product/{productId}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> removeProduct(@PathVariable("cateId") Long cateId,
+    public ResponseEntity<Map<String,String>> removeProduct(@PathVariable("cateId") Long cateId,
                                                        @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(categoryService.removeProduct(cateId,productId));
     }

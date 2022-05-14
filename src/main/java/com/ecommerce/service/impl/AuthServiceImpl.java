@@ -16,7 +16,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,13 +59,13 @@ public class AuthServiceImpl implements AuthService {
     public Map<String, String> forgetPassword(ForgetPassword forgetPassword) {
         Map<String,String> response = new HashMap<>();
         try{
-            com.ecommerce.domain.User user = userRepo.findByUsernameAndEmail(forgetPassword.getUsername(),forgetPassword.getEmail());
+            com.ecommerce.domain.User user = userRepo.findByUsername(forgetPassword.getUsername());
             if(user == null) throw new ResourceNotFoundException(String.format("%s not found !",forgetPassword.getUsername()));
             long otp = otpService.generateOTP(forgetPassword.getUsername());
 
             try {
                 SimpleMailMessage message = new SimpleMailMessage();
-                message.setTo(forgetPassword.getEmail());
+                message.setTo(user.getEmail());
                 message.setSubject("OTP");
                 message.setText("OTP : " + otp );
                 emailSender.send(message);
@@ -76,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
                 response.put("message","Send mail error!");
             }
         }catch (Exception ex){
-            response.put("message","failed");
+            response.put("message",String.format("%s user not found!",forgetPassword.getUsername()));
         }
         return response;
     }

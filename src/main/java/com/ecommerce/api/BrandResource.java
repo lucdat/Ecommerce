@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -46,13 +47,13 @@ public class BrandResource {
     }
     @Operation(summary = "Add product to brand", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/brand/{brandId}/add/product/{productId}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addProductToBrand(@PathVariable("brandId") Long brandId,
-                                                       @PathVariable("productId") Long productId){
+    public ResponseEntity<Map<String,String>> addProductToBrand(@PathVariable("brandId") Long brandId,
+                                                                @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(brandService.addProduct(brandId,productId));
     }
     @Operation(summary = "Remove product in brand", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/brand/{brandId}/remove/product/{productId}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> removeProduct(@PathVariable("brandId") Long brandId,
+    public ResponseEntity<Map<String,String>> removeProduct(@PathVariable("brandId") Long brandId,
                                                        @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(brandService.removeProduct(brandId,productId));
     }
@@ -64,7 +65,7 @@ public class BrandResource {
     }
     @Operation(summary = "Upload logo", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value="/brand/{id}/uploadLogo",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> uploadImages(@PathVariable("id")Long brandId, @RequestParam("logo") MultipartFile image){
+    public ResponseEntity<Map<String,String>> uploadImages(@PathVariable("id")Long brandId, @RequestParam("logo") MultipartFile image){
         return ResponseEntity.ok().body(brandService.uploadLogo(brandId,image));
     }
 }

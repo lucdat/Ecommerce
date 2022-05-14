@@ -12,4 +12,6 @@ public interface UserService {
     PageOrderDTO getListOrders(Long id,int page, int size);
     String update(UserDTO userDTO);
     UserDTO findById(Long id);
+
+    UserDTO findByPrincipal();
 }

@@ -4,13 +4,14 @@ import com.ecommerce.dto.domain.CartDTO;
 import com.ecommerce.dto.domain.OrderItemDTO;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface CartService {
-    String add(CartDTO cartDTO);
-    String delete(CartDTO cartDTO);
+    Map<String,String> add(CartDTO cartDTO);
+    Map<String,String> delete(CartDTO cartDTO);
     OrderItemDTO update(CartDTO cartDTO);
     int amount();
     Double totalPrice();
-    String clear();
+    Map<String,String> clear();
     Collection<OrderItemDTO> orderItem();
 }

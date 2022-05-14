@@ -7,6 +7,7 @@ import com.ecommerce.dto.domain.ProductDTO;
 import com.ecommerce.exception.UniqueConstrainException;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface CategoryService {
     PageCategoryDTO findAll(int page, int size);
@@ -17,9 +18,9 @@ public interface CategoryService {
 
     CategoryDTO update(CategoryDTO category);
 
-    String addProduct(Long cateId, Long productId);
+    Map<String,String> addProduct(Long cateId, Long productId);
 
-    String removeProduct(Long cateId, Long productId);
+    Map<String,String> removeProduct(Long cateId, Long productId);
 
     PageProductDTO getListProducts(Long cateId,int page,int size);
 }

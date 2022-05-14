@@ -1,5 +1,8 @@
 package com.ecommerce.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface ImportService {
-    String checkOut(ImportItemService importService);
+    Map<String,String> checkOut(ImportItemService importService);
 }

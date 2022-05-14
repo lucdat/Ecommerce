@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +64,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public String addProduct(Long cateId, Long productId) {
+    public Map<String,String> addProduct(Long cateId, Long productId) {
+        Map<String,String> response = new HashMap<>();
         if(cateId!=null && productId!=null){
             Category category = categoryRepo.findById(cateId).orElseThrow(
                     () -> new ResourceNotFoundException(String.format("Category ID %S not found",cateId)));
@@ -70,13 +73,14 @@ public class CategoryServiceImpl implements CategoryService {
                     () -> new ResourceNotFoundException(String.format("Product ID %S not found",productId)));
             category.getProducts().add(product);
             product.setCategory(category);
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override
-    public String removeProduct(Long cateId, Long productId) {
+    public Map<String,String> removeProduct(Long cateId, Long productId) {
+        Map<String,String> response = new HashMap<>();
         if(cateId!=null && productId!=null){
             Category category = categoryRepo.findById(cateId).orElseThrow(
                     () -> new ResourceNotFoundException(String.format("Category ID %S not found",cateId)));
@@ -84,9 +88,9 @@ public class CategoryServiceImpl implements CategoryService {
                     () -> new ResourceNotFoundException(String.format("Product ID %S not found",productId)));
             category.getProducts().remove(product);
             product.setCategory(null);
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override

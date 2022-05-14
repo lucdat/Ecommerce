@@ -23,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -67,7 +69,8 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public String addProduct(Long brandId, Long productId) {
+    public Map<String, String> addProduct(Long brandId, Long productId) {
+        Map<String,String> response = new HashMap<>();
         if(brandId!=null && productId!=null){
             Brand brand = brandRepo.findById(brandId).orElseThrow(() ->
                     new ResourceNotFoundException(String.format("Brand ID %s not found",brandId)));
@@ -75,13 +78,14 @@ public class BrandServiceImpl implements BrandService {
                     new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             brand.getProducts().add(product);
             product.setBrand(brand);
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override
-    public String removeProduct(Long brandId, Long productId) {
+    public Map<String,String> removeProduct(Long brandId, Long productId) {
+        Map<String,String> response = new HashMap<>();
         if(brandId!=null && productId!=null){
             Brand brand = brandRepo.findById(brandId).orElseThrow(() ->
                     new ResourceNotFoundException(String.format("Brand ID %s not found",brandId)));
@@ -89,9 +93,9 @@ public class BrandServiceImpl implements BrandService {
                     new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             brand.getProducts().remove(product);
             product.setBrand(null);
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override
@@ -104,7 +108,8 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public String uploadLogo(Long brandId, MultipartFile image) {
+    public Map<String,String> uploadLogo(Long brandId, MultipartFile image) {
+        Map<String,String> response = new HashMap<>();
         Brand brand = brandRepo.findById(brandId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Brand ID %s not found",brandId)));
         try {
@@ -117,9 +122,10 @@ public class BrandServiceImpl implements BrandService {
             }
             brand.setLogo(Base64.getEncoder().encodeToString(image.getBytes()));
             brandRepo.save(brand);
-            return "success";
+            response.put("message","success");
         }catch (IOException exception){
             throw new ImageStorageException(exception.getMessage());
         }
+        return response;
     }
 }

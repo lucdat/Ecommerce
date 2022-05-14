@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -25,12 +26,12 @@ public class CartResource {
 
     @Operation(summary = "Add product to shopping cart", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/cart/add",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addProductToCartItem(@RequestBody CartDTO cartDTO){
+    public ResponseEntity<Map<String,String>> addProductToCartItem(@RequestBody CartDTO cartDTO){
         return ResponseEntity.ok().body(cartService.add(cartDTO));
     }
     @Operation(summary = "Delete product in shopping cart", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/cart/delete",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteProductInCartItem(@RequestBody CartDTO cartDTO){
+    public ResponseEntity<Map<String,String>> deleteProductInCartItem(@RequestBody CartDTO cartDTO){
         return ResponseEntity.ok().body(cartService.delete(cartDTO));
     }
     @Operation(summary = "Update product in shopping cart", security = @SecurityRequirement(name = "bearerAuth"))
@@ -41,7 +42,7 @@ public class CartResource {
 
     @Operation(summary = "Clear shopping cart", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/cart/clear",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> clearCartItem(){
+    public ResponseEntity<Map<String,String>> clearCartItem(){
         return ResponseEntity.ok().body(cartService.clear());
     }
     @Operation(summary = "Get list products in shopping cart", security = @SecurityRequirement(name = "bearerAuth"))

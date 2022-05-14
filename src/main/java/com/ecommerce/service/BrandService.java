@@ -4,6 +4,7 @@ import com.ecommerce.dto.domain.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface BrandService {
     PageBrandDTO findAll(int page, int size);
@@ -14,11 +15,11 @@ public interface BrandService {
 
     BrandDTO update(BrandDTO brandDTO);
 
-    String addProduct(Long brandId, Long productId);
+    Map<String,String> addProduct(Long brandId, Long productId);
 
-    String removeProduct(Long BrandId, Long productId);
+    Map<String,String> removeProduct(Long BrandId, Long productId);
 
     PageProductDTO getListProducts(Long brandId,int page,int size);
 
-    String uploadLogo(Long brandId, MultipartFile image);
+    Map<String,String> uploadLogo(Long brandId, MultipartFile image);
 }

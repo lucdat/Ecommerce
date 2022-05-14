@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +56,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public String addProduct(Long tagId, Long productId) {
+    public Map<String,String> addProduct(Long tagId, Long productId) {
+        Map<String,String> response = new HashMap<>();
         if(tagId!=null&&productId!=null) {
             Tag tag = tagRepo.findById(tagId).orElseThrow(() ->
                     new ResourceNotFoundException(String.format("Tag ID S5 not found",tagId)));
@@ -62,13 +65,14 @@ public class TagServiceImpl implements TagService {
                     () -> new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             tag.getProducts().add(product);
             product.getTags().add(tag);
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override
-    public String removeProduct(Long tagId, Long productId) {
+    public  Map<String,String> removeProduct(Long tagId, Long productId) {
+        Map<String,String> response = new HashMap<>();
         if(tagId!=null&&productId!=null) {
             Tag tag = tagRepo.findById(tagId).orElseThrow(() ->
                     new ResourceNotFoundException(String.format("Tag ID S5 not found",tagId)));
@@ -76,9 +80,9 @@ public class TagServiceImpl implements TagService {
                     () -> new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
             tag.getProducts().remove(product);
             product.getTags().remove(tag);
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override

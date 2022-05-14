@@ -7,14 +7,13 @@ import javax.validation.constraints.*;
 import java.util.Date;
 
 @Data
-public class OrderFilter {
+public class StatisticsFilter {
     @NotNull
     @JsonFormat(pattern = "dd/mm/yyyy")
     private Date dateStart;
     @NotNull
     @JsonFormat(pattern = "dd/mm/yyyy")
     private Date dateEnd;
-    private int page = 1;
-    private int size = 10;
     private String status = "PENDING";
+    private Long id;
 }

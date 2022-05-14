@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -116,5 +118,22 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("User ID %s not found", id)));
         return UserConverter.covertToDTO(user);
+    }
+
+    @Override
+    public UserDTO findByPrincipal() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal!=null){
+            String username;
+            if(principal instanceof UserDetails){
+                username = ((UserDetails) principal).getUsername();
+            }else{
+                username = principal.toString();
+            }
+            User user = userRepo.findByUsername(username);
+            if(user!=null){
+                return UserConverter.covertToDTO(user);
+            }throw new ResourceNotFoundException(String.format("%s not found",username));
+        }else throw new ResourceNotFoundException("User not found");
     }
 }

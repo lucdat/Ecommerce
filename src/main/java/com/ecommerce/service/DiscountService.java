@@ -2,6 +2,8 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.domain.*;
 
+import java.util.Map;
+
 public interface DiscountService {
     PageDiscountDTO findAll(int page, int size);
 
@@ -11,9 +13,9 @@ public interface DiscountService {
 
     DiscountDTO update(DiscountDTO discountDTO);
 
-    String addProduct(Long brandId, Long productId);
+    Map<String,String> addProduct(Long brandId, Long productId);
 
-    String removeProduct(Long BrandId, Long productId);
+    Map<String,String> removeProduct(Long BrandId, Long productId);
 
     PageProductDTO getListProducts(Long discountId, int page, int size);
 }

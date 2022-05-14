@@ -33,6 +33,12 @@ public class UserResource {
         return  ResponseEntity.ok().body(userService.findById(id));
     }
 
+    @Operation(summary = "Find user by principal", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/user")
+    public ResponseEntity<UserDTO> getUserByPrincipal(){
+        return  ResponseEntity.ok().body(userService.findByPrincipal());
+    }
+
     @PostMapping(value = "/user",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody RegisterDTO register){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/api/user").toString());

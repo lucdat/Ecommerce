@@ -51,11 +51,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String checkOut(CartService cartService, OrderDTO orderDTO) {
         //Create order
-        Orders  order = OrderConverter.convertDtoToEntity(orderDTO);
+        Orders order = OrderConverter.convertDtoToEntity(orderDTO);
         order.setAmount(cartService.amount());
         order.setTotalPrice(cartService.totalPrice());
         order.setAmount(cartService.amount());
         order.setTotalPrice(cartService.totalPrice());
+        order.setDate(new Date());
         Orders saveOrder = orderRepo.save(order);
         //insert list item to the db
         for(OrderItemDTO item : cartService.orderItem()){

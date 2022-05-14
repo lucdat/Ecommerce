@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -42,13 +43,13 @@ public class TagResource {
 
     @Operation(summary = "Add product to tag", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/tag/{tagId}/add/product/{productId}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addProductToTag(@PathVariable("tagId") Long tagId,
-                                                       @PathVariable("productId") Long productId){
+    public ResponseEntity<Map<String,String>> addProductToTag(@PathVariable("tagId") Long tagId,
+                                                              @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(tagService.addProduct(tagId,productId));
     }
     @Operation(summary = "Remove product in tag", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/tag/{tagId}/remove/product/{productId}",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> removeProduct(@PathVariable("tagId") Long tagId,
+    public ResponseEntity<Map<String,String>> removeProduct(@PathVariable("tagId") Long tagId,
                                                 @PathVariable("productId") Long productId){
         return ResponseEntity.ok().body(tagService.removeProduct(tagId,productId));
     }

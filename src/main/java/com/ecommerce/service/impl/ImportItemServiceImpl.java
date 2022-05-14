@@ -15,34 +15,36 @@ public class ImportItemServiceImpl implements ImportItemService {
     private Map<String, ImportItemDTO> IMPORT_ITEM = new HashMap<>();
 
     @Override
-    public String add(ImportItemDTO itemDTO) {
+    public Map<String,String> add(ImportItemDTO itemDTO) {
+        Map<String,String> response = new HashMap<>();
         if(itemDTO!=null){
             IMPORT_ITEM.put(itemDTO.getKey(), itemDTO);
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override
-    public String delete(ImportItemDTO itemDTO) {
+    public Map<String,String> delete(ImportItemDTO itemDTO) {
+        Map<String,String> response = new HashMap<>();
         if(itemDTO!=null){
             IMPORT_ITEM.remove(itemDTO.getKey());
-            return "success";
-        }
-        return "error";
+            response.put("message","success");
+        }else response.put("message","error");
+        return response;
     }
 
     @Override
-    public String update(ImportItemDTO itemDTO) {
+    public Map<String,String> update(ImportItemDTO itemDTO) {
+        Map<String,String> response = new HashMap<>();
         if(itemDTO!=null){
             if(IMPORT_ITEM.containsKey(itemDTO.getKey())){
                 IMPORT_ITEM.put(itemDTO.getKey(), itemDTO);
-                return "success";
-            }else{
-                return "error";
-            }
+                response.put("message","success");
+            }else response.put("message","error");
+            return response;
         }
-        return "error";
+        return response;
     }
 
     @Override
@@ -64,9 +66,11 @@ public class ImportItemServiceImpl implements ImportItemService {
     }
 
     @Override
-    public String clear() {
+    public Map<String,String> clear() {
+        Map<String,String> response = new HashMap<>();
         IMPORT_ITEM.clear();
-        return "success";
+        response.put("message","success");
+        return response;
     }
 
     @Override

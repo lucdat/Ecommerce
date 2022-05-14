@@ -13,9 +13,4 @@ public class ForgetPassword {
             ,max=45
             ,message = "The username must be between {min} and {max} characters")
     private String username;
-    @NotBlank(message = "The email must be not blank")
-    @Size(  min = 2
-            ,max=100
-            ,message = "The email must be between {min} and {max} characters")
-    private String email;
 }
