@@ -109,7 +109,6 @@ public class ProductServiceImpl implements ProductService {
         product.setShortDescription(productFormDTO.getShortDescription());
         product.setDetailDescription(product.getDetailDescription());
         product.setPrice(productFormDTO.getPrice());
-        product.setCode(productFormDTO.getCode());
         product.setCompetitivePrice(product.getCompetitivePrice());
         product.setActiveFlag(productFormDTO.getActiveFlag());
         product.setName(productFormDTO.getName());
@@ -117,12 +116,12 @@ public class ProductServiceImpl implements ProductService {
         product.setHotProduct(productFormDTO.getHotProduct());
         product.setBestSeller(productFormDTO.getBestSeller());
         if(!product.getCode().equals(productFormDTO.getCode())){
+            product.setCode(productFormDTO.getCode());
             Product p = productRepo.findByCode(productFormDTO.getCode());
             if(p!=null )
                 throw new UniqueConstrainException("code:Code already exists!");
         }
         productRepo.save(product);
-
         return "success";
     }
 
