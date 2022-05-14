@@ -107,7 +107,7 @@ public class ProductServiceImpl implements ProductService {
                 new ResourceNotFoundException(String.format("Product ID %s not found",productFormDTO.getId())));
         if(!product.getCode().equals(productFormDTO.getCode())){
             Product p = productRepo.findByCode(productFormDTO.getCode());
-            if(p!=null)
+            if(p!=null && !p.getCode().equals(productFormDTO.getCode()))
                 throw new UniqueConstrainException("code:Code already exists!");
         }
         save(productFormDTO);
