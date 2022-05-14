@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.*;
 import java.util.Collection;
 
@@ -27,6 +28,9 @@ public class ProductFormDTO {
             ,message = "The short description must be between {min} and {max} characters")
     private String shortDescription;
     private String detailDescription;
+    private Boolean newProduct;
+    private Boolean bestSeller;
+    private Boolean hotProduct;
     @Min(0)
     private Double price;
     @Min(1) @Max(2)
