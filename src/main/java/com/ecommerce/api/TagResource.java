@@ -28,6 +28,10 @@ public class TagResource {
                                               @RequestParam(required = false,defaultValue = "10") int size){
         return  ResponseEntity.ok().body(tagService.findAll(page,size));
     }
+    @GetMapping("/tag/{id}")
+    public ResponseEntity<TagDTO> findAll(@PathVariable("id") Long id){
+        return  ResponseEntity.ok().body(tagService.findById(id));
+    }
 
     @Operation(summary = "Create tag", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/tag",produces = APPLICATION_JSON_VALUE)

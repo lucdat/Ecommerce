@@ -1,17 +1,24 @@
 package com.ecommerce.service.impl;
 
 import com.ecommerce.domain.*;
-import com.ecommerce.dto.domain.ImportItemDTO;
+import com.ecommerce.dto.converters.ImportConverter;
+import com.ecommerce.dto.domain.*;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.generators.ImportItemFK;
 import com.ecommerce.generators.ProductInStockFK;
 import com.ecommerce.repositories.*;
 import com.ecommerce.service.ImportItemService;
 import com.ecommerce.service.ImportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +40,8 @@ public class ImportServiceImpl implements ImportService {
         Import anImport = new Import();
         anImport.setAmount(importItemService.amount());
         anImport.setTotalPrice(importItemService.totalPrice());
-        anImport.setDate(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        anImport.setDate(Timestamp.valueOf(sdf.format(new Date())));
         Import saveImport = importRepo.save(anImport);
         //Get user
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -178,4 +186,34 @@ public class ImportServiceImpl implements ImportService {
         response.put("message","success");
         return response;
     }
+
+    @Override
+    public PageImport findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page-1,size);
+        Page<Import> imports = importRepo.findAll(pageable);
+        return ImportConverter.covertToPageImport(imports);
+    }
+
+    @Override
+    public ImportDTO findById(Long id) {
+        Import anImport = importRepo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(String.format("Tag ID %s not found",id)));
+        return ImportConverter.covertToDTO(anImport);
+    }
+
+    @Override
+    public PageImportItem getImportItems(Long id, int page, int size) {
+        Pageable pageable = PageRequest.of(page-1,size);
+        Page<ImportItem> importItems = importItemRepo.findByAnImportId(id,pageable);
+        return ImportConverter.covertToPageImportItem(importItems);
+    }
+
+    @Override
+    public ImportItemDTO getImportItem(ImportItemID id) {
+       ImportItem importItem = importItemRepo
+               .findByIdImportIdAndIdProductIdAndIdSizeAndIdColor(id.getImportId(),id.getProductId(),id.getSize(),id.getColor());
+       return ImportConverter.covertToImportItemDTO(importItem);
+    }
+
+
 }

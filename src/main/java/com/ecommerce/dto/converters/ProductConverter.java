@@ -4,6 +4,8 @@ import com.ecommerce.domain.*;
 import com.ecommerce.dto.domain.*;
 import org.springframework.data.domain.Page;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -89,9 +91,9 @@ public class ProductConverter {
             product.setDetailDescription(dto.getDetailDescription());
             product.setPrice(dto.getPrice());
             product.setCompetitivePrice(dto.getCompetitivePrice());
-            Date date = new Date(System.currentTimeMillis());
             product.setGender(dto.getGender());
-            product.setAddAt(date);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+            product.setAddAt(Timestamp.valueOf(sdf.format(new Date())));
             product.setActiveFlag(dto.getActiveFlag());
             product.setNewProduct(false);
             return product;

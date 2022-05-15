@@ -13,16 +13,11 @@ import java.util.Date;
 @AllArgsConstructor
 public class DiscountDTO {
     private long id;
-    @NotBlank(message = "The start date must be not blank")
-    @FutureOrPresent(message = "The start date must be future or present")
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="dd/mm/yyyy")
     private Date startDate;
-    @NotBlank(message = "The end date must be not blank")
-    @Future(message = "The end date must be future ")
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="dd/mm/yyyy")
     private Date endDate;
-    @Min(0)
-    @Max(1)
+    @Min(0) @Max(1)
     private Double sale;
     private Boolean activeFlag;
     private String detail;

@@ -8,6 +8,7 @@ public interface TagService {
     PageTagDTO findAll(int page, int size);
 
     TagDTO save(TagDTO tagDTO);
+    TagDTO findById(Long id);
 
     TagDTO update(TagDTO tagDTO);
 

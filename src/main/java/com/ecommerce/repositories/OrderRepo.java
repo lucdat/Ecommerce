@@ -1,9 +1,7 @@
 package com.ecommerce.repositories;
 
-import com.ecommerce.domain.OrderItem;
 import com.ecommerce.domain.OrderStatus;
 import com.ecommerce.domain.Orders;
-import org.hibernate.annotations.Parameter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,6 +17,13 @@ public interface OrderRepo extends JpaRepository<Orders,Long> {
     Page<Orders> getOrdersByUserId(Long id, Pageable pageable);
     Page<Orders> getOrdersByStatus(OrderStatus status, Pageable pageable);
     Page<Orders> findByStatusAndDateBetween(OrderStatus status,Date dateStart,Date endDate, Pageable pageable);
-    @Query("FROM Orders as o where to_char(date,'mm/YYYY') = ':date' and o.status =:status")
-    Collection<Orders> getByMonth(@Param("date")String date, @Param("status")OrderStatus status);
+    @Query(value = "select * FROM Orders as o " +
+            "where" +
+            " (SELECT EXTRACT(YEAR FROM Timestamp 'o.\"date\"')) = (SELECT EXTRACT(YEAR FROM Timestamp ':eventDate')) " +
+            "AND" +
+            " (SELECT EXTRACT(MONTH FROM Timestamp 'o.\"date\"')) = (SELECT EXTRACT(MONTH FROM Timestamp ':eventDate')) " +
+            "AND" +
+            " o.status = :status",nativeQuery = true)
+    Collection<Orders> gitListOrdersByMonTh(@Param("eventDate") Timestamp eventDate,@Param("status")OrderStatus status);
+
 }

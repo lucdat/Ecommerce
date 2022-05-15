@@ -58,12 +58,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and();
         // Public endpoints
         http.authorizeRequests()
-                .antMatchers("/api/v1/login").permitAll()
                 .antMatchers("/api/v1/auth/**").permitAll()
-                .antMatchers("/api/v1/brands").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/user/").permitAll()
+                .antMatchers("/api/v1/brands").permitAll()
+                .antMatchers("/api/v1/brand/{id:[\\d+]}").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/v1/brand/{id:[\\d+]}/products").permitAll()
                 .antMatchers("/api/v1/categories").permitAll()
+                .antMatchers("/api/v1/category/{id:[\\d+]}").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/v1/category/{id:[\\d+]}/products").permitAll()
                 .antMatchers("/api/v1/products").permitAll()
                 .antMatchers("/api/v1/product/search").permitAll()
@@ -72,9 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/discount/{id:[\\d+]}").permitAll()
                 .antMatchers("/api/v1/discount/{id:[\\d+]}/products").permitAll()
                 .antMatchers("/api/v1/tags").permitAll()
+                .antMatchers("/api/v1/tag/{id:[\\d+]}").permitAll()
                 .antMatchers("/api/v1/tag/{id:[\\d+]}/products").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/v1/user").permitAll()
-                .antMatchers("/api/v1/user/changePassword").permitAll()
+                .antMatchers("/api/v1/user").permitAll()
                 .antMatchers("/v3/api-docs/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll();
@@ -84,7 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Set permissions on endpoints
         http.authorizeRequests()
                 .antMatchers("/api/v1/cart/**").hasAuthority("ROLE_USER")
-                .antMatchers("/api/v1//product/{id:[\\d+]}/comment").hasAnyAuthority("ROLE_USER","ROLE_SALE","ROLE_ADMIN")
+                .antMatchers("/api/v1/product/{id:[\\d+]}/comment").hasAnyAuthority("ROLE_USER","ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/v1/user").hasAnyAuthority("ROLE_USER","ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/v1/user/{id:[\\d+]}/orders").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/user/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
@@ -92,6 +93,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/orders").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/v1/order/{id:[\\d+]}/items").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/order/{id:[\\d+]}/status/{status}").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
+                .antMatchers("/api/v1/imports").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
+                .antMatchers("/api/v1/import/{id:[\\d+]}").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
+                .antMatchers("/api/v1/import/{id:[\\d+]/importItems").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
+                .antMatchers("/api/v1/import/importItem").hasAnyAuthority("ROLE_SALE","ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/**").hasAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/v1/**").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/api/v1/**").hasAuthority("ROLE_ADMIN");

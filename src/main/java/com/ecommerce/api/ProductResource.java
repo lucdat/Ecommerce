@@ -8,6 +8,7 @@ import com.ecommerce.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,7 +60,7 @@ public class ProductResource {
         return ResponseEntity.ok().body(productService.comment(id,commentDTO));
     }
     @Operation(summary = "Upload product images", security = @SecurityRequirement(name = "bearerAuth"))
-    @PostMapping(value="/product/{id}/uploadImages",produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value="/product/{id}/uploadImages",produces = APPLICATION_JSON_VALUE,consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<String> uploadImages(@PathVariable("id")Long productId, @RequestParam("images")MultipartFile[] images){
         return ResponseEntity.ok().body(productService.uploadImages(productId,images));
     }

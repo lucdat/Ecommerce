@@ -102,13 +102,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findById(userDTO.getId()).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("User ID %s not found",userDTO.getId())));
         if(!userDTO.getPhone().equals(user.getPhone())){
-            User phoneExist = userRepo.findByPhone(user.getPhone());
+            User phoneExist = userRepo.findByPhone(userDTO.getPhone());
             if(phoneExist!=null) throw new UniqueConstrainException("phone:Phone already exists!");
+            user.setPhone(userDTO.getPhone());
         }
-        User emailExist = userRepo.findByEmail(user.getEmail());
+        if(!userDTO.getEmail().equals(user.getEmail())){
+            User emailExist = userRepo.findByEmail(userDTO.getEmail());
             if(emailExist!=null) throw new UniqueConstrainException("email:email already exists!");
-        user.setPhone(userDTO.getPhone());
-        user.setEmail(userDTO.getEmail());
+            user.setEmail(userDTO.getEmail());
+        }
         user.setName(userDTO.getName());
         userRepo.save(user);
         return "success";

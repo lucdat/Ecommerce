@@ -28,9 +28,9 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final OrderRepo orderRepo;
     @Override
     public List<ProductStatistics> orderFilter(StatisticsFilter statisticsFilter) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm/yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         Collection<Orders> orders =  orderRepo
-               .getByMonth(simpleDateFormat.format(statisticsFilter.getDateStart()), OrderStatus.valueOf(statisticsFilter.getStatus()));
+               .gitListOrdersByMonTh(Timestamp.valueOf(simpleDateFormat.format(statisticsFilter.getDateStart())), OrderStatus.valueOf(statisticsFilter.getStatus()));
         return orders.stream().map(orderItem -> {
            ProductStatistics statistics = new ProductStatistics();
            statistics.setQuantitySold(orderItem.getAmount());

@@ -1,6 +1,7 @@
 package com.ecommerce.api;
 
-import com.ecommerce.dto.domain.ImportItemDTO;
+import com.ecommerce.dto.domain.*;
+import com.ecommerce.generators.ImportItemFK;
 import com.ecommerce.service.ImportItemService;
 import com.ecommerce.service.ImportService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,5 +53,31 @@ public class ImportResource {
     @PostMapping(value = "/import/checkout",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String,String>> checkout(){
         return ResponseEntity.ok().body(importService.checkOut(importItemService));
+    }
+
+    @Operation(summary = "Get list imports", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping(value = "/imports",produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<PageImport> getListImport(@RequestParam(required = false,defaultValue = "1") int page,
+                                                    @RequestParam(required = false,defaultValue = "10") int size){
+        return ResponseEntity.ok().body(importService.findAll(page,size));
+    }
+
+    @Operation(summary = "Get list imports", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping(value = "/import/{id}",produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<ImportDTO> getImportById(@PathVariable("id") Long id){
+        return ResponseEntity.ok().body(importService.findById(id));
+    }
+    @Operation(summary = "Get list imports", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping(value = "/import/{id}/importItems",produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<PageImportItem> getListImportItem(@PathVariable("id") Long id,
+                                                            @RequestParam(required = false,defaultValue = "1") int page,
+                                                            @RequestParam(required = false,defaultValue = "10") int size){
+        return ResponseEntity.ok().body(importService.getImportItems(id,page ,size));
+    }
+
+    @Operation(summary = "Get list imports", security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping(value = "/importItem",produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<ImportItemDTO> getImportItem(@RequestBody ImportItemID id){
+        return ResponseEntity.ok().body(importService.getImportItem(id));
     }
 }
