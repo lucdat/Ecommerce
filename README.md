@@ -24,8 +24,6 @@
 ## DTO
 ![image](https://user-images.githubusercontent.com/62063013/165293554-fabcccdb-aa53-439d-8de4-37eee5633707.png)
 ## Try It
-LOGIN : Method: POST 
-        URL:https://ecommerce-back-end-spring.herokuapp.com/api/v1/login
         username:user3
         password:123
 https://ecommerce-back-end-spring-boot.herokuapp.com/swagger-ui.html
