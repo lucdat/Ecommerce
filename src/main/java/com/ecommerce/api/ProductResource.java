@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 
 import java.net.URI;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -51,17 +52,17 @@ public class ProductResource {
     }
     @Operation(summary = "Update product", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "/product/update",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateProduct(@Valid @RequestBody ProductFormDTO productFormDTO){
+    public ResponseEntity<Map<String,String>> updateProduct(@Valid @RequestBody ProductFormDTO productFormDTO){
         return ResponseEntity.ok().body(productService.update(productFormDTO));
     }
     @PostMapping(value = "/product/{id}/comment",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> commentProduct(@PathVariable("id") Long id,
+    public ResponseEntity<Map<String,String>> commentProduct(@PathVariable("id") Long id,
                                                  @RequestBody CommentDTO commentDTO){
         return ResponseEntity.ok().body(productService.comment(id,commentDTO));
     }
     @Operation(summary = "Upload product images", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value="/product/{id}/uploadImages",produces = APPLICATION_JSON_VALUE,consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<String> uploadImages(@PathVariable("id")Long productId, @RequestParam("images")MultipartFile[] images){
+    public ResponseEntity<Map<String,String>> uploadImages(@PathVariable("id")Long productId, @RequestParam("images")MultipartFile[] images){
         return ResponseEntity.ok().body(productService.uploadImages(productId,images));
     }
 }

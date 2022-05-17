@@ -53,7 +53,7 @@ public class CartResource {
 
     @Operation(summary = "Checkout shopping cart", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/cart/checkout",produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> checkout(@Valid @RequestBody OrderDTO orderDTO){
+    public ResponseEntity<Map<String,String>> checkout(@Valid @RequestBody OrderDTO orderDTO){
         return ResponseEntity.ok().body(orderService.checkOut(cartService,orderDTO));
     }
 }

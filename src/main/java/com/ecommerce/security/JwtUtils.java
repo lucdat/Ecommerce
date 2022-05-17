@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 public class JwtUtils {
     @Value("${jwt.secret}")
     private String secret;
-
     @Value("${jwt.expiration}")
     private Long expiration;
+
     public String generateToken(UserDetails user) {
         Algorithm algorithm = Algorithm.HMAC256(secret.getBytes());
         String access_token = JWT.create()

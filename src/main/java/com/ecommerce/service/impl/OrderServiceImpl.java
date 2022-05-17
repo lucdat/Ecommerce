@@ -49,7 +49,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String checkOut(CartService cartService, OrderDTO orderDTO) {
+    public Map<String,String> checkOut(CartService cartService, OrderDTO orderDTO) {
+        Map<String,String> response = new HashMap<>();
         //Create order
         Orders order = OrderConverter.convertDtoToEntity(orderDTO);
         order.setAmount(cartService.amount());
@@ -90,7 +91,8 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         cartService.clear();
-        return "Success";
+        response.put("message","success");
+        return response;
     }
 
     @Override

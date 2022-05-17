@@ -24,9 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(rollbackOn = Exception.class)
@@ -102,7 +100,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String update(ProductFormDTO productFormDTO) {
+    public Map<String,String> update(ProductFormDTO productFormDTO) {
+        Map<String,String> response = new HashMap<>();
         Product product = productRepo.findById(productFormDTO.getId()).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Product ID %s not found",productFormDTO.getId())));
         product.setGender(productFormDTO.getGender());
@@ -122,11 +121,12 @@ public class ProductServiceImpl implements ProductService {
                 throw new UniqueConstrainException("code:Code already exists!");
         }
         productRepo.save(product);
-        return "success";
+        response.put("message","success");
+        return response;
     }
 
     @Override
-    public String comment(Long id, CommentDTO commentDTO) {
+    public Map<String,String> comment(Long id, CommentDTO commentDTO) {
         Product product = productRepo.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Product ID %s not found",id)));
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -153,7 +153,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String uploadImages(Long productId, MultipartFile[] images) {
+    public Map<String,String> uploadImages(Long productId, MultipartFile[] images) {
+        Map<String,String> response = new HashMap<>();
         Product product = productRepo.findById(productId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Product ID %s not found",productId)));
         for(MultipartFile file:images){
@@ -175,7 +176,8 @@ public class ProductServiceImpl implements ProductService {
             }
 
         }
-        return "success";
+        response.put("message","success");
+        return response;
     }
 
     @Override

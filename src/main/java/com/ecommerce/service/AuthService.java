@@ -10,8 +10,6 @@ import java.util.Map;
 public interface AuthService {
     Map<String,String> login(LoginRequest loginRequest);
     Map<String,String> forgetPassword(ForgetPassword forgetPassword);
-
     Map<String,String> enterOTP(OTP otp);
-
     Map<String,String> changePassword(PasswordDTO passwordDTO);
 }

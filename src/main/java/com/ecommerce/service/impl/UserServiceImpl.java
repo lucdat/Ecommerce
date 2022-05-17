@@ -11,25 +11,20 @@ import com.ecommerce.exception.UniqueConstrainException;
 import com.ecommerce.repositories.OrderRepo;
 import com.ecommerce.repositories.RoleRepo;
 import com.ecommerce.repositories.UserRepo;
-import com.ecommerce.security.JwtUtils;
 import com.ecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -37,15 +32,14 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final JwtUtils jwtUtils;
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
     private final OrderRepo orderRepo;
     private final PasswordEncoder passwordEncoder;
     @Override
     public PageUserDTO findAll(int page, int size) {
-        Pageable padeable = PageRequest.of(page-1,size);
-        Page<User> list = userRepo.findAll(padeable);
+        Pageable pageable = PageRequest.of(page-1,size);
+        Page<User> list = userRepo.findAll(pageable);
         return UserConverter.covertToPageUserDTO(list);
     }
 
@@ -69,25 +63,29 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String addRoleToUser(long userId, long roleId) {
+    public Map<String,String> addRoleToUser(long userId, long roleId) {
+        Map<String,String> response = new HashMap<>();
         Role role = roleRepo.findById(roleId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Role ID %s not found",roleId)));
         User user = userRepo.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Role ID %s not found",userId)));
         user.getRoles().add(role);
         role.getUsers().add(user);
-        return "success";
+        response.put("message","success");
+        return response;
     }
 
     @Override
-    public String removeRoleInUser(long userId, long roleId) {
+    public Map<String,String> removeRoleInUser(long userId, long roleId) {
+        Map<String,String> response = new HashMap<>();
         Role role = roleRepo.findById(roleId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Role ID %s not found",roleId)));
         User user = userRepo.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Role ID %s not found",userId)));
         user.getRoles().remove(role);
         role.getUsers().remove(user);
-        return "success";
+        response.put("message","success");
+        return response;
     }
 
     @Override
@@ -98,7 +96,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String update(UserDTO userDTO) {
+    public Map<String,String> update(UserDTO userDTO) {
+        Map<String,String> response = new HashMap<>();
         User user = userRepo.findById(userDTO.getId()).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("User ID %s not found",userDTO.getId())));
         if(!userDTO.getPhone().equals(user.getPhone())){
@@ -113,7 +112,8 @@ public class UserServiceImpl implements UserService {
         }
         user.setName(userDTO.getName());
         userRepo.save(user);
-        return "success";
+        response.put("message","success");
+        return response;
     }
     @Override
     public UserDTO findById(Long id) {
