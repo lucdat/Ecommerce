@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 
 @Entity
@@ -29,6 +30,8 @@ public class User {
     private String email;
     @Column(columnDefinition = "boolean default false")
     private Boolean activeFlag;
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private Date date;
 
     @OneToMany(mappedBy = "user")
     private Collection<Comment> comments = new HashSet<>();

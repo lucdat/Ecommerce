@@ -1,11 +1,15 @@
 package com.ecommerce.service;
 
-import com.ecommerce.dto.domain.StatisticsFilter;
-import com.ecommerce.dto.domain.ProductStatistics;
-
-import java.util.List;
+import com.ecommerce.dto.domain.ImportFilter;
+import com.ecommerce.dto.domain.OrderFilter;
+import com.ecommerce.dto.domain.ProductFilter;
+import com.ecommerce.dto.domain.Statistics;
 
 public interface StatisticsService {
 
-    List<ProductStatistics> orderFilter(StatisticsFilter statisticsFilter);
+    Statistics orderFilter(OrderFilter orderFilter);
+
+    Statistics importFilter(ImportFilter importFilter);
+
+    Statistics productFilter(ProductFilter productFilter);
 }
