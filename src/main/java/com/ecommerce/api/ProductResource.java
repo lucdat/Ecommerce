@@ -55,6 +55,7 @@ public class ProductResource {
     public ResponseEntity<Map<String,String>> updateProduct(@Valid @RequestBody ProductFormDTO productFormDTO){
         return ResponseEntity.ok().body(productService.update(productFormDTO));
     }
+    @Operation(summary = "Comment", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/product/{id}/comment",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String,String>> commentProduct(@PathVariable("id") Long id,
                                                  @RequestBody CommentDTO commentDTO){
